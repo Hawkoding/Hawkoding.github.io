@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="占位文章：演示文章页支持的排版元素——小标题、列表、引用、链接与附注。">
+  <title>示例：文章页排版元素速览 — Your Blog</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="示例：文章页排版元素速览">
+  <meta property="og:description" content="占位文章：演示文章页支持的排版元素——小标题、列表、引用、链接与附注。">
+  <meta property="article:published_time" content="2026-11-01T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       默认部署在 /hawk/ 子路径下；上传封面图后替换地址并取消注释:
+  <link rel="canonical" href="https://你的用户名.github.io/hawk/blog/posts/post-elements-demo.html">
+  <meta property="og:url" content="https://你的用户名.github.io/hawk/blog/posts/post-elements-demo.html">
+  <meta property="og:image" content="https://你的用户名.github.io/hawk/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://你的用户名.github.io/hawk/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Your Blog RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Your Blog</strong><span>你的博客名</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>示例：文章页排版元素速览</h1>
+          <p class="post-deck">占位示例：这页演示文章模板里可以直接使用的排版元素，写新文章时照着删改即可。</p>
+          <div class="post-meta">
+            <time datetime="2026-11-01">2026.11.01</time>
+            <span>教程</span>
+            <span>3 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>占位段落：正文默认是 15px / 1.7 行高的衬线正文（移动端自动放大），你只需要关心写什么。下面是可用的元素。</p>
+
+          <h2>小标题（h2）</h2>
+
+          <p>占位段落：小标题用于分节，编号或不编号都可以，保持同一篇文章里风格一致即可。</p>
+
+          <h2>列表</h2>
+
+          <ul>
+            <li>占位列表项：适合枚举条件、步骤或清单。</li>
+            <li>占位列表项：每项保持一行左右，太长就拆成段落。</li>
+            <li>占位列表项：列表不宜嵌套太深。</li>
+          </ul>
+
+          <h2>引用与链接</h2>
+
+          <blockquote>占位引用块：放别人的观点时给出处，放自己的观点时给上下文。</blockquote>
+
+          <p>占位段落：正文里的链接像 <a href="https://example.com/">这样</a>使用，站内跳转用相对路径（如 <a href="../index.html">返回文章列表</a>）。</p>
+
+          <h2>文末附注</h2>
+
+          <p>占位段落：如果文章有 AI 参与、参考资料或后续更新，统一放在文末的附注里，不打断正文。</p>
+
+          <aside class="note"><strong>附注说明：</strong>占位示例——这段会以强调样式显示在文末；不需要时整段删除。</aside>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 你的名字 / Your Name</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+</body>
+</html>

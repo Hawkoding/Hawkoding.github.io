@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# deploy.sh — 学术主页整站一键部署到 GitHub Pages（hawk）
+# deploy.sh — 学术主页整站一键部署到 GitHub Pages（根域名 Hawkoding.github.io）
 # ----------------------------------------------------------------------------
 # 用法:
 #   bash deploy.sh              正常部署（需要 GH_TOKEN 环境变量）
@@ -14,8 +14,8 @@
 #                 Administration / Contents / Pages 写权限
 #                 安全约定: token 只出现在 curl / git 的请求头里，
 #                 不写入任何文件、远程地址或日志。
-#   REPO_NAME     可选。仓库名, 默认 hawk（站点将发布在
-#                 https://<用户名>.github.io/hawk/ 子路径下）
+#   REPO_NAME     可选。仓库名, 默认 Hawkoding.github.io（用户名仓库,
+#                 站点将发布在 https://<用户名>.github.io/ 根路径下）
 #   FORCE_PUSH    可选。=1 时推送附加 --force（覆盖远程 main 分支历史）
 #   POLL_INTERVAL 可选。站点就绪轮询间隔（秒）, 默认 10
 #   POLL_MAX      可选。站点就绪轮询最大次数, 默认 45
@@ -28,11 +28,13 @@
 #   4) 在本目录 git init, 整站 add/commit（含 blog/、cv/ 等全部文件）,
 #      通过临时请求头认证推送到远程 main 分支
 #   5) 启用 GitHub Pages（main 分支 / 根目录）
-#   6) 轮询 https://<用户名>.github.io/<仓库名>/ 直至返回 200
+#   6) 轮询 https://<用户名>.github.io/（根域名）直至返回 200
 #
 # 说明:
-#   · 仓库名若恰为 <用户名>.github.io, 站点将发布在根路径,
-#     脚本会自动识别, 无需修改任何文件（站内链接全部是相对路径）。
+#   · 默认仓库 Hawkoding.github.io 恰为 <用户名>.github.io, 站点发布在
+#     根路径 https://hawkoding.github.io/, 脚本自动识别, 无需修改任何
+#     文件（站内链接全部是相对路径）。
+#   · 若 REPO_NAME 改为普通仓库名, 站点自动落到 /<仓库名>/ 子路径。
 #   · 本脚本自身随整站一并入库, 克隆仓库后可再次运行以更新站点。
 # ============================================================================
 
@@ -40,7 +42,7 @@ set -u
 umask 022
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" && pwd)
-REPO_NAME="${REPO_NAME:-hawk}"
+REPO_NAME="${REPO_NAME:-Hawkoding.github.io}"
 POLL_INTERVAL="${POLL_INTERVAL:-10}"
 POLL_MAX="${POLL_MAX:-45}"
 DRY_RUN=0

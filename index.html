@@ -1,35 +1,33 @@
 <!DOCTYPE html>
 <!--
   ═══════════════════════════════════════════════════════════════════
-  学术个人主页模板 · Academic Homepage Template（单文件版）
+  李昊锦 · 个人主页 / Haojin Li — Personal Homepage
   ───────────────────────────────────────────────────────────────────
-  · 单文件：全部样式内联在下方 <style> 中，直接改这一个文件即可。
-  · 替换方法：全文搜索「你的」即可逐项定位占位内容并替换。
-  · 配色：灰阶 + 深蓝（--accent: #2c3e6b），想换主题色只需改 :root 里的变量。
-  · 头像 / 校徽：默认为首字母头像与图标占位；替换为
-      <img class="photo"    src="images/avatar.jpg"       alt="你的名字">
-      <img class="edu-logo" src="images/school-logo.png"  alt="学校名">
+  · 线上地址：https://hawkoding.github.io/（GitHub Pages 根域名）
+  · 单文件页面：全部样式内联在下方 <style> 中，直接改这一个文件即可。
+  · 配色：灰阶 + 深蓝（--accent: #2c3e6b），换主题色只需改 :root 变量。
+  · 头像 / 校徽：当前为首字母与图标占位，替换为
+      <img class="photo"    src="images/avatar.jpg"      alt="李昊锦">
+      <img class="edu-logo" src="images/school-logo.png" alt="江南大学">
     即可换成真实图片（对应位置已留注释）。
-  · 图标：Font Awesome 6.5.1 走 CDN，可继续使用 <i class="fab fa-github"></i> 等。
+  · 图标：Font Awesome 6.5.1 走 CDN，需浏览器联网。
   · 移动端：640px 断点自适应，无需额外操作。
-  · 本页内的 blog/、cv/ 链接需要配套目录才能打开；完整多文件站点
-    （blog/ 列表页 + 文章页 + RSS、cv/ 占位简历、一键部署脚本）见
-    github-pages-deploy/ 部署包，本模板是它的单文件精简版。
+  · blog/ 与 cv/ 目录为占位内容，主页暂不设入口；待真实博文 / 简历 PDF
+    就绪后，恢复导航 Blog 链接与页眉 CV 链接即可（相关样式均已保留）。
+  · 设计参考 unik-lif.github.io（MIT License），特此致谢。
   ═══════════════════════════════════════════════════════════════════
 -->
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>你的名字 / Your Name</title>
-<meta name="description" content="你的名字 —— 研究方向关键词一的研究者，同时关注关键词二与关键词三。">
+<title>李昊锦 / Haojin Li</title>
+<meta name="description" content="李昊锦（Haojin Li），嵌入式软件工程师，就职于苏州普源精电（RIGOL）示波器事业部。专注 Linux 驱动、仪器通信软件与嵌入式 AI 边缘部署。">
 <meta property="og:type" content="website">
-<meta property="og:title" content="你的名字 — 你的研究领域 / Your Field">
-<meta property="og:description" content="研究、项目与文章：一句话介绍你的研究主题。">
-<!-- 以下 og:url / og:image / twitter:* 引用的是尚不存在的文件，
-     暂时注释避免死引用。上传封面图（如 images/og-cover.png）后取消注释
-     （本站部署在根路径 https://hawkoding.github.io/）:
+<meta property="og:title" content="李昊锦 — 嵌入式软件工程师 / Embedded Software Engineer">
+<meta property="og:description" content="Linux 驱动（6 Gbps PCIe 链路）· 跨 ARM/x86 平台迁移（98% 代码复用）· RK3588 边缘 AI（NPU 吞吐 6×）。">
 <meta property="og:url" content="https://hawkoding.github.io/">
+<!-- 封面图就绪后取消注释（当前未上传 images/og-cover.png，暂避免死引用）:
 <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
@@ -95,6 +93,8 @@
     color: var(--c6);
     background: var(--c1);
   }
+  /* Blog 导航链接已移除（blog/ 为占位内容，暂不设入口）；恢复时加回
+     <a class="blog-link" href="blog/">Blog ↗</a> 并补回深色胶囊按钮样式：
   .site-nav .links .blog-link {
     color: var(--c0);
     background: var(--c6);
@@ -104,6 +104,7 @@
     color: var(--c0);
     background: var(--accent);
   }
+  */
 
   /* ── Header ── */
   header {
@@ -122,7 +123,7 @@
     border: 2px solid var(--c2);
   }
   /* 首字母头像占位：换成真实照片时，把整个 <div class="photo initials">
-     替换为 <img class="photo" src="images/avatar.jpg" alt="你的名字"> */
+     替换为 <img class="photo" src="images/avatar.jpg" alt="李昊锦"> */
   header .photo.initials {
     display: flex;
     align-items: center;
@@ -170,7 +171,8 @@
   }
   header .meta .sep { color: var(--c3); user-select: none; }
 
-  /* ── Featured blog ── */
+  /* ── Featured blog（卡片 HTML 已于 2026-11-11 移除：blog/ 目录为占位内容，
+     暂不设入口；样式整体保留，恢复时粘回卡片结构即可，或改造为主打项目卡）── */
   .blog-feature {
     position: relative;
     display: block;
@@ -301,7 +303,7 @@
     margin-top: 2px;
   }
   /* 校徽占位：换成真实校徽时，把 <div class="edu-logo initials"> 替换为
-     <img class="edu-logo" src="images/school-logo.png" alt="学校名"> */
+     <img class="edu-logo" src="images/school-logo.png" alt="江南大学"> */
   .edu-logo.initials {
     display: flex;
     align-items: center;
@@ -357,6 +359,31 @@
     margin-top: 1px;
   }
   .work-detail { margin-top: 1px; }
+  .work-item { margin-bottom: 24px; }
+  .work-item:last-child { margin-bottom: 0; }
+  /* 工作要点列表：与 .proj 项目卡 ▸ 列表同款 */
+  ul.bullets {
+    list-style: none;
+    margin: 8px 0 0;
+  }
+  ul.bullets li {
+    position: relative;
+    padding-left: 15px;
+    font-size: 13.5px;
+    color: var(--c5);
+    line-height: 1.6;
+    margin-bottom: 5px;
+  }
+  ul.bullets li:last-child { margin-bottom: 0; }
+  ul.bullets li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 10px;
+    color: var(--c3);
+    line-height: 1.65;
+  }
 
   /* ── Projects ── */
   .proj {
@@ -432,7 +459,7 @@
     line-height: 1.65;
   }
 
-  /* ── Publications ── */
+  /* ── Publications（本站用作专利与软著条目）── */
   .pub {
     margin-bottom: 16px;
     padding-bottom: 16px;
@@ -508,7 +535,7 @@
   @media (max-width: 640px) {
     .page { padding: 36px 18px 56px; }
     .site-nav { margin-bottom: 28px; }
-    .site-nav .links a:not(.blog-link) { display: none; }
+    /* 导航锚点在移动端保留显示（原模板移动端仅显示 Blog 按钮，Blog 已移除） */
     header { flex-direction: column; align-items: flex-start; gap: 16px; }
     header .photo { width: 72px; height: 72px; }
     header .photo.initials { font-size: 24px; }
@@ -525,110 +552,76 @@
 <body>
 <div class="page">
 
-  <!-- ═════ 顶部导航：monogram 改成你名字的首字母缩写 ═════ -->
+  <!-- ═════ 顶部导航：monogram 为姓名拼音首字母 ═════ -->
   <nav class="site-nav" aria-label="主导航">
-    <a class="monogram" href="index.html" aria-label="返回你的名字的主页">YN</a>
+    <a class="monogram" href="index.html" aria-label="返回李昊锦的主页">LH</a>
     <div class="links">
       <a href="#research">Research</a>
+      <a href="#awards">Awards</a>
       <a href="#publications">Publications</a>
-      <a class="blog-link" href="blog/">Blog <span aria-hidden="true">↗</span></a>
     </div>
   </nav>
 
-  <!-- ═════ ① 页眉：头像 + 姓名 + 身份 + 联系方式 ═════ -->
+  <!-- ═════ ① 页眉：头像 + 姓名 + 身份 + 联系方式（仅公开邮箱，其余隐私不上页）═════ -->
   <header>
-    <!-- 头像占位：替换为 <img class="photo" src="images/avatar.jpg" alt="你的名字"> -->
-    <div class="photo initials" role="img" aria-label="你的名字的首字母头像占位">YN</div>
+    <!-- 头像占位：替换为 <img class="photo" src="images/avatar.jpg" alt="李昊锦"> -->
+    <div class="photo initials" role="img" aria-label="李昊锦的首字母头像">LH</div>
     <div>
-      <h1>你的名字 / Your Name</h1>
-      <div class="role">你的身份与研究方向（示例：PhD Student in Computer Systems）</div>
-      <div class="affil">你的学校 · 你的学院 / Your University, Your Institute</div>
+      <h1>李昊锦 / Haojin Li</h1>
+      <div class="role">嵌入式软件工程师 / Embedded Software Engineer</div>
+      <div class="affil">苏州普源精电（RIGOL）· 示波器事业部 / RIGOL Technologies · Oscilloscope BU</div>
       <div class="meta">
-      你的城市 City
-      <span class="sep">·</span>
-      <a href="mailto:you@example.com">you@example.com</a>
-      <span class="sep">·</span>
-      <a href="https://github.com/yourname">GitHub</a>
-      <span class="sep">·</span>
-      <a href="blog/">Blog</a>
-      <span class="sep">·</span>
-      <a href="cv/cv.pdf">CV (EN)</a>
-      <span class="sep">·</span>
-      <a href="cv/cv_cn.pdf">CV (中文)</a>
-    </div>
+        苏州 Suzhou
+        <span class="sep">·</span>
+        <a href="mailto:1507992088@qq.com">1507992088@qq.com</a>
+      </div>
     </div>
   </header>
 
-  <!-- ═════ ② 精选博客卡片：整体可删；href 指向你的博客地址 ═════ -->
-  <a class="blog-feature" href="blog/" aria-label="访问我的博客">
-    <div class="eyebrow"><span class="dot" aria-hidden="true"></span> Now writing · Blog</div>
-    <h2>你的博客名称 / Your Blog Name</h2>
-    <p>用一两句话介绍博客主题：记录研究、项目与思考（示例文案，替换成你自己的）。</p>
-  </a>
+  <!-- ═════ ② 精选博客卡片：已移除（blog/ 为占位内容，暂不设入口）。
+       恢复方法：粘回 .blog-feature 卡片结构（样式保留在 <style> 中）═════ -->
 
-  <!-- ═════ ③ About：研究简介 +（可选）求职信息 + 中文自我介绍 ═════ -->
+  <!-- ═════ ③ About 简介 ═════ -->
   <section class="about">
     <p>
-      我就读于你的学校（师从 <a href="#">导师 A 教授</a>、<a href="#">导师 B 教授</a>），
-      研究方向为<strong>你的研究方向</strong>（示例：系统安全 / 机器学习 / 数据库……）。
-      关注的具体问题：关键词一（如：操作系统隔离与虚拟化）、关键词二、关键词三。
-      代表性工作包括 <a href="#">项目甲（一句话成果，如：发表于 XX'26）</a>、
-      <a href="#">项目乙（一句话成果）</a>。
-      其他入口：<a href="#">课程笔记 / 开源仓库等链接</a>。
+      我是<strong>李昊锦</strong>，嵌入式软件工程师。2024 年毕业于江南大学通信工程专业，
+      现就职于苏州普源精电（RIGOL）示波器事业部，参与中端仪器平台开发与高端平台预研。
+      工作主线三件事：<strong>Linux 驱动</strong>（PCIe XDMA / USB / 以太网，链路速率做到 6 Gbps）、
+      <strong>仪器通信与命令解析框架</strong>（多协议数据链路 + IEEE 488.2）、
+      <strong>跨 ARM / x86 平台迁移与工程化</strong>（核心模块 98% 代码复用）。
     </p>
     <p>
-      <strong>（可选段落）正在寻找实习 / 工作机会：方向一、方向二、方向三。</strong>
+      工作之外持续迭代国家级大创项目<strong>「智慧环卫」</strong>：在 RK3588 上部署 YOLOv5s，
+      12 线程并行推理把 NPU 吞吐做到单线程的 6 倍，用于垃圾桶满溢识别与回收调度。
     </p>
-    <p>
-      <strong>（可选段落）如果你觉得我的背景与你的团队匹配，欢迎邮件联系我，谢谢！</strong>
-    </p>
+    <div lang="en">
+      <p>
+        Embedded software engineer at RIGOL's oscilloscope division — Linux drivers,
+        instrument communication stacks, and ARM/x86 platform migration.
+        Side project: edge AI waste sorting on RK3588.
+      </p>
+    </div>
     <div lang="zh-CN">
       <p>
-        中文自我介绍示例：我是你的名字，用一两句话概括你目前的状态与性格特质，
-        方便访问者快速了解你。
-      </p>
-      <p>
-        兴趣爱好示例：列举两三项长期坚持的爱好，加一两个有趣的细节，
-        让页面更有个人气息。
-      </p>
-      <p>
-        为什么做这个方向：简短讲述你选择该领域的原因与目标，
-        例如「比起发现问题，我更喜欢把系统可靠地搭建起来」。
+        球场上是首发中锋，场下用 SolidWorks / PS / PR 做点小东西。
+        比起发现问题，我更喜欢把系统可靠地搭建起来。
       </p>
     </div>
   </section>
 
-  <!-- ═════ ④ Education 教育经历：每条一行，日期在右侧 ═════ -->
+  <!-- ═════ ④ Education 教育经历 ═════ -->
   <section>
     <h2>Education</h2>
     <div class="edu-list">
       <div class="edu-row">
-        <!-- 校徽占位：替换为 <img class="edu-logo" src="images/school-logo.png" alt="学校名"> -->
+        <!-- 校徽占位：替换为 <img class="edu-logo" src="images/school-logo.png" alt="江南大学"> -->
         <div class="edu-logo initials" role="img" aria-label="校徽占位"><i class="fa-solid fa-building-columns" aria-hidden="true"></i></div>
         <div class="edu-body">
-          <div class="deg">博士 · 你的专业 / PhD, Your Major</div>
-          <div class="detail">你的学校 · 你的学院 / Your University</div>
-          <div class="detail">备注示例（如：硕转博）· 导师：<a href="#">导师 A 教授</a>、<a href="#">导师 B 教授</a></div>
+          <div class="deg">学士 · 通信工程 / B.Eng, Communication Engineering</div>
+          <div class="detail">江南大学（211 工程 · 双一流）/ Jiangnan University</div>
+          <div class="detail">GPA 3.1 / 4.0（专业前 30%）· 英飞凌社会奖学金（5/297）、校二等/三等奖学金 · 主持国家级大创并以优秀结题</div>
         </div>
-        <div class="edu-date">2024 – now</div>
-      </div>
-      <div class="edu-row">
-        <div class="edu-logo initials" role="img" aria-label="校徽占位"><i class="fa-solid fa-building-columns" aria-hidden="true"></i></div>
-        <div class="edu-body">
-          <div class="deg">硕士 · 你的专业 / M.Eng, Your Major</div>
-          <div class="detail">你的学校 · 你的学院 / Your University</div>
-          <div class="detail">导师：<a href="#">导师 A 教授</a> · GPA 3.83 / 4.00（示例）</div>
-        </div>
-        <div class="edu-date">2022 – 2024</div>
-      </div>
-      <div class="edu-row">
-        <div class="edu-logo initials" role="img" aria-label="校徽占位"><i class="fa-solid fa-building-columns" aria-hidden="true"></i></div>
-        <div class="edu-body">
-          <div class="deg">学士 · 你的专业 / B.Eng, Your Major</div>
-          <div class="detail">你的学校 / Your University</div>
-          <div class="detail">导师：导师 A 教授 · GPA 3.70 / 4.00（Top 30%，示例）</div>
-        </div>
-        <div class="edu-date">2018 – 2022</div>
+        <div class="edu-date">2020 – 2024</div>
       </div>
     </div>
   </section>
@@ -636,110 +629,124 @@
   <!-- ═════ ⑤ Work Experience 工作经历 ═════ -->
   <section id="work-experience" aria-labelledby="work-experience-heading">
     <h2 id="work-experience-heading">Work Experience</h2>
-    <div class="work-head">
-      <h3>你的公司 / Your Company</h3>
-      <span class="work-date"><time datetime="2026-10">2026.10</time> – present</span>
-    </div>
-    <div class="work-role">你的职位（示例：某方向实习工程师）</div>
-    <p class="work-detail">一句话描述你在做什么（示例：负责 XX 系统的设计与实现）。</p>
-    <p class="work-detail">（可选）预计结束：<time datetime="2027-01">2027.01</time></p>
-  </section>
 
-  <!-- ═════ ⑥ Teaching 教学 / 助教经历 ═════ -->
-  <section>
-    <h2>Teaching</h2>
-    <div class="card">
-      <div class="card-row">
-        <span class="t">助教 · 课程名称（示例：数字电路）</span>
-        <span class="d">2025 秋 / Fall 2025</span>
+    <div class="work-item">
+      <div class="work-head">
+        <h3>苏州普源精电（RIGOL）· 示波器事业部 / RIGOL Technologies</h3>
+        <span class="work-date"><time datetime="2024-07">2024.07</time> – present</span>
       </div>
-      <div class="sub">本科课程 · 你的学校 · 你的学院</div>
+      <div class="work-role">嵌入式软件工程师 / Embedded Software Engineer</div>
+      <p class="work-detail">参与中端仪器平台开发与高端仪器平台预研（Linux 系统）。</p>
+      <ul class="bullets">
+        <li><strong>Linux 驱动：</strong>负责 PCIe XDMA 驱动向 x86 平台移植与性能优化，构建 rHal 硬件抽象层供业务调用，大数据包传输速率达 6 Gbps；完成 eDP 触摸屏、以太网 PHY、蓝牙/Wi-Fi 等外设驱动移植与调试。</li>
+        <li><strong>通信与解析框架：</strong>设计多协议数据链路库（Socket / UART / USB-TMC / WebSocket，事件驱动架构），通信效率提升 20%；维护 IEEE 488.2 命令解析器，搭建 Conan + CI/CD 交付流水线，库交付周期压缩 40%。</li>
+        <li><strong>平台迁移与质量：</strong>实施 ARM→x86 架构迁移，重构 GCC / CMake / Conan 分层编译工具链，核心模块代码复用率 98%；基于 googleTest 编写单元测试（覆盖率 80%+），修复内存泄漏等缺陷 15 处。</li>
+        <li><strong>工程流程：</strong>设计面向库的模块化管理方案与 Code Review 流程（Cpplint + Gerrit，接入 CI），沉淀三版管理文档。</li>
+      </ul>
+    </div>
+
+    <div class="work-item">
+      <div class="work-head">
+        <h3>中科芯集成电路（中国电科 58 所）· MCU 事业部 / CETC 58th Research Institute</h3>
+        <span class="work-date"><time datetime="2023-06">2023.06</time> – 2023.09</span>
+      </div>
+      <div class="work-role">嵌入式开发实习生 / Embedded Software Intern</div>
+      <ul class="bullets">
+        <li>完成 CKSDAPLINK 调试器与 CKS 脱机烧录器的焊接测试，以及 45 款 CKS32 开发板例程（LCD / CAN / SPI / I2C / ADC 等）的测试与优化。</li>
+        <li>协助定位客户低温以太网通信异常：通过高低温实验、波形测量等交叉对比测试，定位 FSMC 控制总线问题。</li>
+        <li>掌握 1–4 层板 PCB Layout 与元器件焊接，熟悉集成电路上下游产业链。</li>
+      </ul>
     </div>
   </section>
 
-  <!-- ═════ ⑦ Research Projects 研究项目：卡片式，每张含 角色/技术栈/链接 + 要点列表 ═════ -->
+  <!-- ═════ ⑥ Awards & Honors 奖项与荣誉（原 Teaching 版块改造，条目复用 .pub 样式）═════ -->
+  <section id="awards">
+    <h2>Awards &amp; Honors / 奖项与荣誉</h2>
+    <p class="work-detail">以下竞赛奖项均出自国家级大创项目「智慧环卫」（省部级及以上 4 项）：</p>
+    <div class="pub">
+      <div class="title">全国大学生节能减排社会实践与科技竞赛（A 类）· 全国三等奖</div>
+      <div class="venue">2023 · 项目负责人</div>
+    </div>
+    <div class="pub">
+      <div class="title">全国大学生集成电路创新创业大赛 · 东部赛区二等奖（杯赛第二）</div>
+    </div>
+    <div class="pub">
+      <div class="title">中韩环保 ICT 竞赛 · 创新奖</div>
+    </div>
+    <div class="pub">
+      <div class="title">全国嵌入式系统与设计竞赛 · 东部赛区三等奖</div>
+    </div>
+    <div class="pub">
+      <div class="title">江南大学「博动未来」创新挑战赛 · 初赛第一名</div>
+    </div>
+  </section>
+
+  <!-- ═════ ⑦ Research Projects 研究项目：卡片式，每张含 角色/技术栈 + 要点列表 ═════ -->
   <section id="research">
     <h2>Research Projects</h2>
 
     <div class="proj">
       <div class="proj-head">
-        <span class="name">项目一 · 你的旗舰项目名称 / Your Flagship Project</span>
-        <span class="date">2025.5 – present</span>
+        <span class="name">智慧环卫 · 智能垃圾回收与调度系统 / Smart Sanitation</span>
+        <span class="date">2022.06 – present</span>
       </div>
       <div class="proj-meta">
-        Role: 独立完成 &nbsp;|&nbsp; 技术栈示例：C · Linux Kernel · Docker · QEMU &nbsp;|&nbsp;
-        <a href="https://github.com/yourname/project-one" title="GitHub"><i class="fab fa-github"></i> code</a> &nbsp;|&nbsp;
-        <a href="#" title="论文链接（占位）"><i class="far fa-file-pdf"></i> paper</a> &nbsp;|&nbsp; 一句话状态（示例：原型已完成，正在投稿）
+        Role: 项目负责人（主持）&nbsp;|&nbsp; 国家级大创 · 优秀结题，持续个人迭代 &nbsp;|&nbsp;
+        技术栈：STM32 / i.MX6 · MQTT · YOLOv5s · RK3588（NPU / RGA / MPP）· C + Python
       </div>
       <ul>
-        <li><strong>问题（Problem）：</strong>这个领域存在什么问题？为什么现有方案不够好？</li>
-        <li><strong>方法（Approach）：</strong>你的核心思路与关键设计，用一两句话说清楚。</li>
-        <li><strong>对比（vs. Existing）：</strong>与已有工作相比的优势与差异点。</li>
-        <li><strong>安全性（Security）：</strong>（可选）安全属性与威胁模型，如隔离边界、攻击面收敛。</li>
-        <li><strong>性能（Performance）：</strong>（可选）关键数据，如端到端开销、微基准对比。</li>
-        <li><strong>进行中（In progress）：</strong>（可选）正在推进的部分与当前状态。</li>
-        <li><strong>我的角色（My Role）：</strong>独立完成 / 负责哪些模块；合作者贡献说明（如有）。</li>
+        <li><strong>问题：</strong>垃圾桶满溢、回收不精准、分类推广难——设计云–边–端协同的智能垃圾回收与垃圾桶调度系统，为环卫公司提供设备与软件的数字化服务。</li>
+        <li><strong>边缘 AI：</strong>RK3588 部署 YOLOv5s，12 线程并行推理使 3 个 NPU 核心占用率超 90%，吞吐量较单线程提升 6 倍、较 Python 部署提速 35%。</li>
+        <li><strong>异构加速：</strong>RGA + OpenCL 图像预处理较 OpenCV 方案快 2 倍；V4L2 + dma-buf 零拷贝采集；MPP 硬编码 H.264，FFmpeg 推流 Nginx 实现实时监控。</li>
+        <li><strong>端云一体：</strong>STM32 / i.MX6 设备控制 + 4G（MQTT）上云 + 微信小程序可视化；早期 AlexNet 分类识别率 90%+，armv7 NEON 加速使图像处理耗时减半。</li>
+        <li><strong>成果：</strong>全国节能减排大赛（A 类）全国三等奖等 5 项竞赛奖励；发明专利 1 项（实审中）、软件著作权 2 项（详见 Publications）。</li>
       </ul>
     </div>
 
     <div class="proj">
       <div class="proj-head">
-        <span class="name">项目二 · 合作研究项目 / Your Collaborative Project</span>
-        <span class="date">2024.6 – 2025.4</span>
+        <span class="name">基于 STM32H7 的数字示波器 / Digital Oscilloscope on STM32H7</span>
+        <span class="date">2023</span>
       </div>
       <div class="proj-meta">
-        Role: 共同负责人 &nbsp;|&nbsp; 技术栈示例：Python · PyTorch · Docker &nbsp;|&nbsp;
-        <a href="https://github.com/yourname/project-two" title="GitHub"><i class="fab fa-github"></i> code</a> &nbsp;|&nbsp;
-        <a href="#" title="arXiv（占位）"><i class="far fa-file-pdf"></i> arXiv</a> &nbsp;|&nbsp;
-        <a href="#" title="Demo（占位）"><i class="fas fa-globe"></i> demo</a>
+        Role: 独立完成 &nbsp;|&nbsp; 技术栈：STM32H7 · ADC + DMA · FIFO · LCD
       </div>
       <ul>
-        <li><strong>问题：</strong>……</li>
-        <li><strong>方法：</strong>……</li>
-        <li><strong>发现二（可选）：</strong>第二个发现 / 攻击面 / 洞察，与第一条呼应。</li>
-        <li><strong>防御（Defense）：</strong>（可选）对应的防御方案、披露流程与评估结果。</li>
-        <li><strong>影响（Impact）：</strong>开源反响 / 被引用 / 工业界采用等。</li>
-        <li><strong>发表（Publication）：</strong>投稿去向与结果（示例：发表于 XX'25，CCF-A）。</li>
+        <li>设计「探头采样 → ADC + DMA → FIFO 缓存 → LCD 显示」的完整信号链，实现实时波形显示，与本职示波器工作互相印证。</li>
       </ul>
     </div>
 
     <div class="proj">
       <div class="proj-head">
-        <span class="name">项目三 · 早期项目 / Your Early Project</span>
-        <span class="date">2023.7 – 2024.5</span>
+        <span class="name">si4463 无线加密传输设备 / Encrypted Wireless Link</span>
+        <span class="date">2023</span>
       </div>
       <div class="proj-meta">
-        Role: 核心成员 &nbsp;|&nbsp; 技术栈示例：Rust · C · Linux 内核模块 &nbsp;|&nbsp;
-        <a href="https://github.com/yourname/project-three" title="GitHub"><i class="fab fa-github"></i> code</a> &nbsp;|&nbsp;
-        <a href="#" title="论文（占位）"><i class="far fa-file-pdf"></i> paper</a>
+        Role: 独立完成 &nbsp;|&nbsp; 技术栈：STM32 · si4463 · AES · 自定义握手协议
       </div>
       <ul>
-        <li><strong>问题：</strong>……</li>
-        <li><strong>方法：</strong>……</li>
-        <li><strong>兼容性（Compatibility）：</strong>（可选）与现有生态 / 旧系统的兼容策略。</li>
-        <li><strong>工程量（Engineering）：</strong>代码规模与难点（示例：7000+ 行 Rust）。</li>
-        <li><strong>成果（Recognition）：</strong>获奖 / 开源影响 / 后续去向。</li>
+        <li>将 AES 加解密移植至 STM32，设计握手通信协议并优化 si4463 射频驱动，实现端到端加密的无线数据传输。</li>
       </ul>
     </div>
   </section>
 
-  <!-- ═════ ⑧ Publications 论文：自己加粗用 <span class="me">，徽章用 <span class="badge"> ═════ -->
+  <!-- ═════ ⑧ Patents & Software Copyrights 专利与软著（原 Publications 版块改造）═════ -->
   <section id="publications">
-    <h2>Publications</h2>
+    <h2>Patents &amp; Software Copyrights / 专利与软著</h2>
     <div class="pub">
-      <div class="title">你的论文标题一：主标题——副标题（示例格式）</div>
-      <div class="authors"><span class="me">你的名字</span>, 合作者一, 合作者二（共同一作）, 通讯作者*</div>
-      <div class="venue">会议 / 期刊名称 2026 <span class="badge">会议等级示例</span> <a href="#" title="PDF（占位）"><i class="far fa-file-pdf"></i></a></div>
+      <div class="title">一种垃圾回收方法、智能垃圾箱及垃圾回收系统</div>
+      <div class="authors"><span class="me">李昊锦</span>（第一发明人）等</div>
+      <div class="venue">中国发明专利 · 已进入实质审查 <span class="badge">实审中</span></div>
     </div>
     <div class="pub">
-      <div class="title">你的论文标题二（期刊论文示例）</div>
-      <div class="authors">合作者一, <span class="me">你的名字</span>（第一学生作者）, 通讯作者*</div>
-      <div class="venue">期刊名称 2025 <span class="badge">期刊等级示例</span> <a href="#" title="PDF（占位）"><i class="far fa-file-pdf"></i></a></div>
+      <div class="title">校园垃圾车回收路径规划网站平台 V1.0</div>
+      <div class="authors"><span class="me">李昊锦</span></div>
+      <div class="venue">中国软件著作权 · 已受理 <span class="badge">软著</span></div>
     </div>
     <div class="pub">
-      <div class="title">你的论文标题三：Poster / Demo（示例）</div>
-      <div class="authors"><span class="me">你的名字</span>, 合作者一, 合作者二</div>
-      <div class="venue">Workshop / Poster, 会议名称与地点 <span class="badge">Poster</span> <a href="#" title="Poster PDF（占位）"><i class="far fa-file-pdf"></i></a></div>
+      <div class="title">〔待补充〕第二项软件著作权名称</div>
+      <div class="authors"><span class="me">李昊锦</span></div>
+      <div class="venue">中国软件著作权 · 已受理 <span class="badge">软著</span></div>
     </div>
   </section>
 
@@ -747,27 +754,31 @@
   <section>
     <h2>Skills</h2>
     <div class="skill-group">
+      <span class="label">嵌入式平台</span>
+      <span class="val">51 · STM32（H7）· ESP32 · NXP i.MX6ULL · RK3588（NPU / RGA / MPP）· 飞腾</span>
+    </div>
+    <div class="skill-group">
       <span class="label">编程语言</span>
-      <span class="val">示例：C, C++, Python, Rust</span>
+      <span class="val">C · C++ · Python · 汇编；C &amp; Python 混合编程</span>
     </div>
     <div class="skill-group">
-      <span class="label">工具与平台</span>
-      <span class="val">示例：Git, Docker, Linux, PyTorch</span>
+      <span class="label">Linux 与驱动</span>
+      <span class="val">PCIe / USB / 网络驱动移植 · kernel 与设备树 · Git · CMake / Conan · CI/CD（Gerrit + Cpplint）</span>
     </div>
     <div class="skill-group">
-      <span class="label">研究方向</span>
-      <span class="val">示例：操作系统、虚拟化、机器学习系统</span>
+      <span class="label">嵌入式 AI</span>
+      <span class="val">YOLOv5s / AlexNet 边缘部署 · NPU 多线程并行推理 · RGA + OpenCL 异构加速</span>
     </div>
     <div class="skill-group">
-      <span class="label">其他技能</span>
-      <span class="val">示例：体系结构（x86 / RISC-V）、技术写作、绘图</span>
+      <span class="label">工程与硬件</span>
+      <span class="val">googleTest 单元测试（覆盖率 80%+）· Code Review 流程 · 技术文档 · PCB Layout（1–4 层）</span>
     </div>
   </section>
 
   <!-- ═════ ⑩ Footer 页脚 ═════ -->
   <footer>
-    你的名字 / Your Name · 2026<br>
-    <span class="credit">一句话署名（示例：Built with curiosity, maintained with care.）</span>
+    李昊锦 / Haojin Li · 2026<br>
+    <span class="credit">把想法可靠地做成系统。/ Turning ideas into reliable systems.</span>
   </footer>
 
 </div>

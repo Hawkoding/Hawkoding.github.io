@@ -486,10 +486,12 @@ POST_TEMPLATE = """<!DOCTYPE html>
     </main>
 
     <footer class="site-footer">
-      <span>© %%YEAR%% %%AUTHOR_CN%%</span>
+      <span>© %%YEAR%% %%AUTHOR_CN%% · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
       <a href="../index.html">继续阅读 →</a>
     </footer>
   </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </body>
 </html>
 """

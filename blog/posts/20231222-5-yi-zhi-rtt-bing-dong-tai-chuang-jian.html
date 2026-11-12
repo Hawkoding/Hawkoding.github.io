@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Github链接：https://github.com/HawkJ02/RT-Thread_Handmade&quot;&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……">
+  <title>5、移植RTT并动态创建线程 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="5、移植RTT并动态创建线程">
+  <meta property="og:description" content="Github链接：https://github.com/HawkJ02/RT-Thread_Handmade&quot;&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……">
+  <meta property="article:published_time" content="2023-12-22T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20231222-5-yi-zhi-rtt-bing-dong-tai-chuang-jian.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20231222-5-yi-zhi-rtt-bing-dong-tai-chuang-jian.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>5、移植RTT并动态创建线程</h1>
+          <p class="post-deck">Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</p>
+          <div class="post-meta">
+            <time datetime="2023-12-22">2023.12.22</time>
+            <span>RTOS</span>
+            <span>3 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>Github链接：<a href="<a href="https://github.com/HawkJ02/RT-Thread_Handmade">https://github.com/HawkJ02/RT-Thread_Handmade</a>">HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</a></p>
+
+          <p>本章Chapter5还是跟着野火的例程将RTT移植至正点原子的精英V2开发板（牛头人），并且使用线程（动态分配）点灯！</p>
+
+          <h2>安装RT\_Thread nano Pack</h2>
+
+          <p>pack包安装链接：<a href="<a href="https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.0.3.pack">https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.0.3.pack</a>"><a href="https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.0.3.pack">https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.0.3.pack</a></a><br>安装完毕后可以进入已安装软件包看到RTT 3.0.3：</p>
+
+          <p><img src="../../images/blog/2023/12/image-19.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2023/12/image-18-1024x676.png" alt="" loading="lazy"></p>
+
+          <p>进入此图标：</p>
+
+          <p><img src="../../images/blog/2023/12/image-20.png" alt="" loading="lazy"></p>
+
+          <p>可以看到RTOS目录下已有RTT，添加kernel：</p>
+
+          <p><img src="../../images/blog/2023/12/image-21-1024x795.png" alt="" loading="lazy"></p>
+
+          <p>可以看到左侧的project中已添加RTT的组件：</p>
+
+          <p><img src="../../images/blog/2023/12/image-22.png" alt="" loading="lazy"></p>
+
+          <p>内核移植，接口文件（RTT官方写的支持MCU的文件）：<br><code>context_rvds.s<br>cpuport.c</code></p>
+
+          <p>内核文件：<br><code>clock.c<br>components.c<br>device.c<br>idle.c<br>ipc.c<br>irq.c<br>kservice.c<br>mem.c<br>object.c<br>scheduler.c<br>thread.c<br>timer.c</code></p>
+
+          <p>应用代码：<br><code>board.c</code></p>
+
+          <p>配置文件：<br><code>rtconfig.h</code></p>
+
+          <p>这些代码在之前的文章里基本都有所介绍，在接下来移植的过程中，你可以直接在keil自动添加的这些代码中进行修改，也可以打包一份RTT工程，随着我们的项目一起发布。</p>
+
+          <h2>移植</h2>
+
+          <p>首先我们将RTT文件夹内这两个程序移动至项目的user文件夹下，意味着这两个文件是使用者进行修改的：</p>
+
+          <p><img src="../../images/blog/2023/12/image-23.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2023/12/image-24.png" alt="" loading="lazy"></p>
+
+          <p>然后在项目管理目录下添加rtt/source和rtt/ports，其中source是rtt的src文件夹下的源代码，ports是mcu的接口文件：</p>
+
+          <p><img src="../../images/blog/2023/12/image-25.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2023/12/image-26.png" alt="" loading="lazy"></p>
+
+          <p>接着我们在魔术棒里添加RTT需要链接的头文件：</p>
+
+          <p><img src="../../images/blog/2023/12/image-28.png" alt="" loading="lazy"></p>
+
+          <p>TIPS:如果你的文件上带了小钥匙，说明是只读模式，可以在文件的属性中修改：</p>
+
+          <p><img src="../../images/blog/2023/12/image-29.png" alt="" loading="lazy"></p>
+
+          <p>对rt\_config.h进行以下三处修改，其中per\_second代表着系统滴答时钟的scale是1ms，THREAD\_STACK\_SIZE设置为512，并且注释掉RTE头文件：</p>
+
+          <p><img src="../../images/blog/2023/12/image-30-1024x795.png" alt="" loading="lazy"></p>
+
+          <p>修改board.c程序，详情请查看github仓库：主要是将时钟部分的初始化使用固件库的程序，添加board.h以供外部程序调用。</p>
+
+          <p>并且在stm32的中断服务函数程序中，将PendSV、Systick以及HardFault\_Handler(void)这三个函数注释掉，因为在RTT的程序中也有声明，我们既然使用了操作系统，就不用自带的了。</p>
+
+          <p><img src="../../images/blog/2023/12/image-32-1024x467.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2023/12/image-31-1024x606.png" alt="" loading="lazy"></p>
+
+          <p>在此部分的最后，我们先测试LED是否能够点亮，再进入创建线程部分。</p>
+
+          <p>将LED的GPIO初始化移至board.c的硬件初始化程序中，并在main函数中调用这个函数（记得包含头文件噢），其中：</p>
+
+          <p><img src="blob:<a href="http://www.hawkjgogogo.com/e6647d8e-0b05-433f-8135-1a2aa53d242a">http://www.hawkjgogogo.com/e6647d8e-0b05-433f-8135-1a2aa53d242a</a>" alt="" loading="lazy"></p>
+
+          <p>include "board.h"中是我们自定义的一些函数的头文件</p>
+
+          <p>include "rtthread.h"中是RTT官方的头文件</p>
+
+          <p><img src="../../images/blog/2023/12/image-33.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2023/12/image-35.png" alt="" loading="lazy"></p>
+
+          <p>可以看到LED正常点亮（注意：我使用的是正点原子的板子和野火的例程，这两家的原理图不是一样的！相信你这么厉害一定能自己修改下GPIO叭）。</p>
+
+          <p>到目前为止，我们的RTT已经移植完毕！</p>
+
+          <h2>创建单线程</h2>
+
+          <p>我们目前已经确定LED的硬件没有问题，接下来，我们开始创建线程。创建线程的方式分为静态内存和动态内存：<br>静态内存是指在程序编译的时候就创建，比如我们之前手搓RTT的时候创建的flag线程都是在main.c的开头定义了线程栈<br>static rt\_uint8\_t rt\_led1\_thread\_stack\[1024\]<br>当程序开始运行的时候，无论当前有没有创建此线程，它的栈都已经开辟了。</p>
+
+          <p>所以在项目中我们更常用的是动态内存。动态内存指的是在我们创建线程的时候分配栈空间，这样的利用效率更高。</p>
+
+          <p>首先我们在rt\_config.h中将使用HEAP（堆）解除封印：</p>
+
+          <p><img src="../../images/blog/2023/12/image-36.png" alt="" loading="lazy"></p>
+
+          <p>这样我们在board.c中定义的函数也得以封印解除：</p>
+
+          <p><img src="../../images/blog/2023/12/image-37.png" alt="" loading="lazy"></p>
+
+          <p>为什么是4KB呢，因为在堆内部，可以理解为一个超级长的数组，每一个元素都是占32bit即4Byte即1Word的空间，那么1024个数组元素就是4096Byte啦。</p>
+
+          <p>跟之前手搓的RTT时候使用的静态内存分配不同，使用动态内存分配的时候，我们在thread\_init上又包含了一层调用，rt\_thread\_create：</p>
+
+          <p><img src="../../images/blog/2023/12/image-38.png" alt="" loading="lazy"></p>
+
+          <p>查看其内部构造：</p>
+
+          <p><img src="../../images/blog/2023/12/image-39.png" alt="" loading="lazy"></p>
+
+          <p>这个函数就是实现了动态地分配内存，通过RT\_KERNEL\_MALLOC函数分配到了内存，挖个坑（深究下具体内存是如何分配的！）</p>
+
+          <p>就这样，我们的开发板训练师，首先<strong>定义线程控制块指针</strong>，接着<strong>定义线程的入口函数（线程的主要运行代码）</strong>，然后<strong>在主函数中初始化线程</strong>，最后<strong>线程！启动！</strong></p>
+
+          <p><img src="../../images/blog/2023/12/B4666A9002FD4D079793925F7C0BE570-2-1024x768.jpg" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2023/12/DA7F41098546A3CB965F8269C799B0C2-1-1024x768.jpg" alt="" loading="lazy"></p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

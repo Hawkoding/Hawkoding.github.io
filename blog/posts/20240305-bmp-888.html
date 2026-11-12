@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="参考文章：截屏！使用FatFs存储24位色BMP图像至SD卡语言：C编译器：Keil5stm32库：HAL-1.5.x串口：UART1">
+  <title>bmp_888 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="bmp_888">
+  <meta property="og:description" content="参考文章：截屏！使用FatFs存储24位色BMP图像至SD卡语言：C编译器：Keil5stm32库：HAL-1.5.x串口：UART1">
+  <meta property="article:published_time" content="2024-03-05T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20240305-bmp-888.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20240305-bmp-888.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>bmp_888</h1>
+          <p class="post-deck">参考文章：截屏！使用FatFs存储24位色BMP图像至SD卡语言：C编译器：Keil5stm32库：HAL-1.5.x串口：UART1</p>
+          <div class="post-meta">
+            <time datetime="2024-03-05">2024.03.05</time>
+            <span>单片机</span>
+            <span>2 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <h2>bmp_888</h2>
+
+          <h2>使用场景以及原理</h2>
+
+          <p>参考文章：<a href="../posts/20240304-jie-ping-shi-yong-fatfs-cun-chu-24-wei.html">截屏！使用FatFs存储24位色BMP图像至SD卡</a></p>
+
+          <h2>代码示例</h2>
+
+          <p>语言：C<br>编译器：Keil5<br>stm32库：HAL-1.5.x<br>串口：UART1</p>
+
+          <p>```C//你的屏幕一共有多少像素点#define BMP_BUFFER (320*240)//RGB888格式数据结构体，注意在内存中存储是以BGR的顺序（非RGB）typedef struct {	u8 B;	u8 G;	u8 R;} bmp_24bit;</p>
+
+          <p>/* BMP的信息头文件一共占54个字节，由于保存的是24bit的RGB888像素数据，所以不需要调色板结构体 *///BMP头文件typedef __packed struct{    u16  bfType ;     //文件标志.只对'BM',用来识别BMP位图类型    u32  bfSize ;	  //文件大小,占四个字节    u16  bfReserved1 ;//保留    u16  bfReserved2 ;//保留    u32  bfOffBits ;  //从文件开始到位图数据(bitmap data)开始之间的的偏移量}BITMAPFILEHEADER ;</p>
+
+          <p>//BMP信息头typedef __packed struct{    u32 biSize ;		   		//说明BITMAPINFOHEADER结构所需要的字数。    long  biWidth ;		   	//说明图象的宽度，以象素为单位    long  biHeight ;	   	//说明图象的高度，以象素为单位    u16  biPlanes ;	   		//为目标设备说明位面数，其值将总是被设为1    u16  biBitCount ;	   	//说明比特数/象素，其值为1、4、8、16、24、或32	/*说明图象数据压缩的类型。其值可以是下述值之一：	BI_RGB：没有压缩；	BI_RLE8：每个象素8比特的RLE压缩编码，压缩格式由2字节组成(重复象素计数和颜色索引)；<br>	BI_RLE4：每个象素4比特的RLE压缩编码，压缩格式由2字节组成	BI_BITFIELDS：每个象素的比特由指定的掩码决定。*/    u32 biCompression ;    u32 biSizeImage ;		//说明图象的大小，以字节为单位。当用BI_RGB格式时，可设置为0<br>    long  biXPelsPerMeter ;	//说明水平分辨率，用象素/米表示    long  biYPelsPerMeter ;	//说明垂直分辨率，用象素/米表示    u32 biClrUsed ;	  	 	//说明位图实际使用的彩色表中的颜色索引数    u32 biClrImportant ; 	//说明对图象显示有重要影响的颜色索引的数目，如果是0，表示都重要。}BITMAPINFOHEADER ;</p>
+
+          <p>//整体信息头typedef __packed struct{	BITMAPFILEHEADER bmfHeader;	BITMAPINFOHEADER bmiHeader;<br>}BITMAPINFO;</p>
+
+          <p>//定义接下来在主函数中使用的头文件变量BITMAPINFO bmp_head;//文件系统相关变量FIL fnew;FRESULT res_file;UINT fnum;</p>
+
+          <p>int main(void){	//省略	LCD_Init();                     //初始化LCD	SRAM_Init();					//初始化外部SRAM<br>	//省略	my_mem_init(SRAMIN);			//初始化内部内存池	my_mem_init(SRAMEX);			//初始化外部内存池	//省略挂载Fatfs，默认SD卡挂载到":0"</p>
+
+          <p>	//给bmp_data开辟内存空间	bmp_data = (bmp_24bit *)mymalloc(SRAMEX,BMP_BUFFER*sizeof(bmp_24bit));</p>
+
+          <p>	//填写文件信息头信息<br>	bmp_head.bmfHeader.bfType = 0x4D42;			//bmp_head类型  "BM"	bmp_head.bmfHeader.bfSize= sizeof(BITMAPINFO) + BMP_BUFFER*sizeof(bmp_24bit);	//文件大小（信息结构体+像素数据）	printf("bfSize = 0x%x \r\n",bmp_head.bmfHeader.bfSize);	bmp_head.bmfHeader.bfReserved1 = 0x0000;		//保留，必须为0	bmp_head.bmfHeader.bfReserved2 = 0x0000;  		//保留，必须为0	bmp_head.bmfHeader.bfOffBits=sizeof(BITMAPINFO);				//位图信息结构体所占的字节数</p>
+
+          <p>	//填写位图信息头信息<br>	bmp_head.bmiHeader.biSize=40;  			//位图信息头的大小（固定）	bmp_head.bmiHeader.biWidth=240;  		//位图的宽度	bmp_head.bmiHeader.biHeight=320;  		//图像的高度	bmp_head.bmiHeader.biPlanes=1;  		//目标设别的级别，必须是1	bmp_head.bmiHeader.biBitCount=24;       //每像素位数	bmp_head.bmiHeader.biCompression=0;  	//RGB888格式，不用压缩	bmp_head.bmiHeader.biSizeImage= 0;		//实际位图所占用的字节数（仅考虑位图像素数据）	bmp_head.bmiHeader.biXPelsPerMeter=0;	//水平分辨率	bmp_head.bmiHeader.biYPelsPerMeter=0; 	//垂直分辨率	bmp_head.bmiHeader.biClrImportant=0;   	//说明图像显示有重要影响的颜色索引数目，0代表所有的颜色一样重要	bmp_head.bmiHeader.biClrUsed=0;  		//位图实际使用的彩色表中的颜色索引数，0表示使用所有的调色板项</p>
+
+          <p>	/*--------------------- 文件系统测试：写测试 -----------------------*/	/* 打开文件，如果文件不存在则创建它 */	printf("》写bmp头文件！\r\n");	res_file = f_open(&amp;fnew, "0:bmp测试.bmp",FA_CREATE_ALWAYS|FA_WRITE);	if(res_file == FR_OK)	{		printf("》正在写bmp头中...！\r\n");		res_file = f_write(&amp;fnew, &amp;bmp_head,sizeof(bmp_head), &amp;fnum);		if(res_file == FR_OK)		{			printf("》文件写入成功，写入字节数据：%d\n",fnum);		}		else		{			printf("！！文件写入失败：(%d)\n",res_file);		}		f_close(&amp;fnew);	}	else	{		printf("！！创建文件失败：(%d)\n",res_file);	}</p>
+
+          <p>	p_bmp = bmp_data;	//获取LCD显示数据	for(temp_y = 319;temp_y != 0xffff;temp_y --)	{		for(temp_x = 0;temp_x &lt; 240;temp_x ++)		{			rgb_16bit = LCD_ReadPoint(temp_x,temp_y);			p_bmp-&gt;R = (u8)((rgb_16bit &amp; 0xF800) &gt;&gt; 8);			p_bmp-&gt;G = (u8)((rgb_16bit &amp; 0x07E0) &gt;&gt; 3);			p_bmp-&gt;B = (u8)((rgb_16bit &amp; 0x001F) &lt;&lt; 3);			//·printf("p_bmp = 0X%x, R = 0X%x, G = 0X%x, B = 0X%x \r\n",(uint32_t )p_bmp, (uint32_t )p_bmp-&gt;R, (uint32_t )p_bmp-&gt;G, (uint32_t )p_bmp-&gt;B);			p_bmp ++;</p>
+
+          <p>		}	}	//printf("bmp_data = 0X%x, R = 0X%x, G = 0X%x, B = 0X%x \r\n",(uint32_t )bmp_data, (uint32_t )bmp_data-&gt;R, (uint32_t )bmp_data-&gt;G, (uint32_t )bmp_data-&gt;B);	printf("\n\r 》写bmp数据！\r\n");	res_file = f_open(&amp;fnew, "0:bmp测试.bmp",FA_OPEN_EXISTING|FA_WRITE);</p>
+
+          <p>	if(res_file == FR_OK)	{		//寻找到打开文件的末尾，添加数据		f_lseek(&amp;fnew,f_size(&amp;fnew));		printf("》寻找文件的结尾成功，写入bmp数据中...！\r\n");		//这里注意第二个参数直接填写数组名就可以，默认指向最开始的地址<br>		res_file = f_write(&amp;fnew, bmp_data, BMP_BUFFER*sizeof(bmp_24bit), &amp;fnum);		if(res_file == FR_OK)		{			printf("》文件写入成功，写入字节数据：%d\n",fnum);		}		else		{			printf("！！文件写入失败：(%d)\n",res_file);		}		f_close(&amp;fnew);	}	else	{		printf("！！写入数据失败：(%d)\n",res_file);	}</p>
+
+          <p>}</p>
+
+          <p>```</p>
+
+          <h2>待解决问题</h2>
+
+          <p>在开辟内存空间bmp_data = (bmp_24bit *)mymalloc(SRAMEX,320*240*sizeof(bmp_24bit));的时候，如果开辟到SRAMIN的话就会出现错误，但是SRAMEX就没有BUG，待解决。</p>
+
+          <h2>注意</h2>
+
+          <p>指向新开辟内存的指针不能动，比如bmp_data，可以设置一个p_bmp，使用这个指针对bmp_data数组进行修改等操作。</p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

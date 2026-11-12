@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="上一章中讲到的定时器是为了不同优先级的线程进行了排序，那么对于相同优先级的线程就要使用到时间片进行定时。主要就是看时间片用没用完，用完了就调度，我感觉用的不多，直接看现象吧！">
+  <title>4、时间片 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="4、时间片">
+  <meta property="og:description" content="上一章中讲到的定时器是为了不同优先级的线程进行了排序，那么对于相同优先级的线程就要使用到时间片进行定时。主要就是看时间片用没用完，用完了就调度，我感觉用的不多，直接看现象吧！">
+  <meta property="article:published_time" content="2023-12-22T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20231222-4-shi-jian-pian.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20231222-4-shi-jian-pian.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>4、时间片</h1>
+          <p class="post-deck">上一章中讲到的定时器是为了不同优先级的线程进行了排序，那么对于相同优先级的线程就要使用到时间片进行定时。主要就是看时间片用没用完，用完了就调度，我感觉用的不多，直接看现象吧！</p>
+          <div class="post-meta">
+            <time datetime="2023-12-22">2023.12.22</time>
+            <span>RTOS</span>
+            <span>1 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>上一章中讲到的定时器是为了不同优先级的线程进行了排序，那么对于相同优先级的线程就要使用到时间片进行定时。主要就是看时间片用没用完，用完了就调度，我感觉用的不多，直接看现象吧！</p>
+
+          <p><img src="../../images/blog/2023/12/image-108-1024x490.png" alt="" loading="lazy"></p>
+
+          <p>线程1和线程2是同一优先级的，所以他们会交替运行：</p>
+
+          <p><img src="../../images/blog/2023/12/image-109.png" alt="" loading="lazy"></p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

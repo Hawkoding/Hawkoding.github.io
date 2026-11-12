@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="该实验的起因是我在开源示波器osc509上发现的波形截图功能，我觉得这个功能很有意思，所以我希望自己实现一遍，完整的实验需要你具有以下的知识：">
+  <title>截屏！使用FatFs存储24位色BMP图像至SD卡 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="截屏！使用FatFs存储24位色BMP图像至SD卡">
+  <meta property="og:description" content="该实验的起因是我在开源示波器osc509上发现的波形截图功能，我觉得这个功能很有意思，所以我希望自己实现一遍，完整的实验需要你具有以下的知识：">
+  <meta property="article:published_time" content="2024-03-04T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20240304-jie-ping-shi-yong-fatfs-cun-chu-24-wei.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20240304-jie-ping-shi-yong-fatfs-cun-chu-24-wei.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>截屏！使用FatFs存储24位色BMP图像至SD卡</h1>
+          <p class="post-deck">该实验的起因是我在开源示波器osc509上发现的波形截图功能，我觉得这个功能很有意思，所以我希望自己实现一遍，完整的实验需要你具有以下的知识：</p>
+          <div class="post-meta">
+            <time datetime="2024-03-04">2024.03.04</time>
+            <span>单片机</span>
+            <span>2 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>该实验的起因是我在开源示波器osc509上发现的波形截图功能，我觉得这个功能很有意思，所以我希望自己实现一遍，完整的实验需要你具有以下的知识：</p>
+
+          <ul>
+          <li>SDIO驱动SD卡：[\[stm32\]一文搞懂SDIO驱动SD卡 - www.hawkjgogogo.com](<a href="http://www.hawkjgogogo.com/2024/03/02/stm32%e4%b8%80%e6%96%87%e6%90%9e%e6%87%82sdio%e9%a9%b1%e5%8a%a8sd%e5%8d%a1/)">http://www.hawkjgogogo.com/2024/03/02/stm32%e4%b8%80%e6%96%87%e6%90%9e%e6%87%82sdio%e9%a9%b1%e5%8a%a8sd%e5%8d%a1/)</a></li>
+          <li>FatFs移植至stm32：装修中...</li>
+          </ul>
+
+          <p>代码可以在装备库中复制：<a href="<a href="https://hawkj02.github.io/CL4H/%E4%BB%A3%E7%A0%81%E6%A8%A1%E5%9D%97/stm32/%E6%88%AA%E5%B1%8F/bmp_888.html">https://hawkj02.github.io/CL4H/%E4%BB%A3%E7%A0%81%E6%A8%A1%E5%9D%97/stm32/%E6%88%AA%E5%B1%8F/bmp_888.html</a>">bmp\_888 — Code Library From HawkJ v1.0 文档 (hawkj02.github.io)</a></p>
+
+          <h2>BMP位图格式</h2>
+
+          <p>BMP格式是一种可以在windows系统中显示的类原始图像，它的文件结构很好理解：<br>文件信息头 + 像素数据 。</p>
+
+          <h2>文件头</h2>
+
+          <p>每一种文件格式在其最开始几乎都有描述该文件内容的一些信息，就像是论文的最开始都有一个Introduction一样。BMP位图格式的信息头包含以下内容：<br>BMP的文件头 = BMP头文件 + BMP信息头</p>
+
+          <p><img src="../../images/blog/2024/03/image-14-1024x769.png" alt="" loading="lazy"></p>
+
+          <p>看起来很复杂吧！没关系，我们接下来会讲到每一个参数的功能。</p>
+
+          <h2>BMP头文件</h2>
+
+          <p>注意以下图像数据在存储的时候会自动使用小段顺序存储，也就是较低的字节在前：<br>比如我们存储字符串"BM"即十六进制0X4D42，在存储的时候就会存储为42 4D。<br>众所周知两个16进制（2 \* 4bit）等于1字节，大端转换为小端是以字节为最小单位，详细可以自行百度搜索，不再赘述。</p>
+
+          <p><img src="../../images/blog/2024/03/image-15-1024x456.png" alt="" loading="lazy"></p>
+
+          <p>根据上述图片的标号，我们可以翻译出如何赋值：</p>
+
+          <p><img src="../../images/blog/2024/03/image-16-1024x139.png" alt="" loading="lazy"></p>
+
+          <p>类似地可以参考野火的图：</p>
+
+          <p><img src="<a href="https://doc.embedfire.com/stemwin/emwin/zh/latest/_images/BMP02.png">https://doc.embedfire.com/stemwin/emwin/zh/latest/_images/BMP02.png</a>" alt="BMP文件头说明" loading="lazy"></p>
+
+          <h2>BMP位图信息头</h2>
+
+          <p><img src="../../images/blog/2024/03/image-17-1024x606.png" alt="" loading="lazy"></p>
+
+          <p>我认为比较重要的就是上图标注处的5个值，可以参考野火的图：</p>
+
+          <p><img src="<a href="https://doc.embedfire.com/stemwin/emwin/zh/latest/_images/BMP03.png">https://doc.embedfire.com/stemwin/emwin/zh/latest/_images/BMP03.png</a>" alt="表位图信息头" loading="lazy"></p>
+
+          <p>参数设置：</p>
+
+          <p><img src="../../images/blog/2024/03/image-18-1024x245.png" alt="" loading="lazy"></p>
+
+          <p>在设置完之后，就代表该文件存储的是RGB888格式的BMP24位图，在后面我们就可以通过LCD的读点函数获得每一个点的像素值。</p>
+
+          <h2>采集LCD数据</h2>
+
+          <p>常用的LCD一般使用的是16位的RGB565数据，但是如果要存储RGB565数据的话还需要在信息头后面跟一个调色板结构体，所以不如将RGB565转化为RGB888格式的数据进行存储，他俩的区别如下图所示，参考文章：<a href="<a href="https://blog.csdn.net/MQ0522/article/details/135204759?spm=1001.2101.3001.6650.3&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-3-135204759-blog-10516871.235%5Ev43%5Epc_blog_bottom_relevance_base8&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-3-135204759-blog-10516871.235%5Ev43%5Epc_blog_bottom_relevance_base8&amp;utm_relevant_index=6">https://blog.csdn.net/MQ0522/article/details/135204759?spm=1001.2101.3001.6650.3&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-3-135204759-blog-10516871.235%5Ev43%5Epc_blog_bottom_relevance_base8&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-3-135204759-blog-10516871.235%5Ev43%5Epc_blog_bottom_relevance_base8&amp;utm_relevant_index=6</a>">TFT显示屏开发：24位真彩色（RGB888）转换 16位真彩色（RGB565）\_tft 24位-CSDN博客</a><br></p>
+
+          <p><img src="../../images/blog/2024/03/image-20-1024x147.png" alt="" loading="lazy"></p>
+
+          <p>RGB888</p>
+
+          <p><img src="../../images/blog/2024/03/image-21.png" alt="" loading="lazy"></p>
+
+          <p>RGB565</p>
+
+          <p>可以看出，在对这两个数据进行一些处理就可以实现转换：</p>
+
+          <p><img src="../../images/blog/2024/03/image-22.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/03/image-19.png" alt="" loading="lazy"></p>
+
+          <p>此处要注意，RGB888事实上不是RGB，而是BGR，当然在转换的时候不要考虑，只需要在RGB888的结构体定义的时候将R与B置换位置，使其在内存中存储的位置调换即可。</p>
+
+          <p>可以看出我们对LCD\_CLEAR(RED)全屏红色进行截屏获得的数据，<br>RGB565 : 1111\_1000\_0000\_0000<br>RGB888 : 0000\_0000\_0000\_0000\_1111\_1000<br>其中RED对应的值就是1111\_1000，非常完美，符合预期。</p>
+
+          <p><img src="../../images/blog/2024/03/image-23-1024x606.png" alt="" loading="lazy"></p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

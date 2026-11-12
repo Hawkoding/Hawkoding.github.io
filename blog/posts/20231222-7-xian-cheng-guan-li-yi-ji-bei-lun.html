@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Github链接：https://github.com/HawkJ02/RT-Thread_Handmade&quot;&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……">
+  <title>7、线程管理以及悖论 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="7、线程管理以及悖论">
+  <meta property="og:description" content="Github链接：https://github.com/HawkJ02/RT-Thread_Handmade&quot;&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……">
+  <meta property="article:published_time" content="2023-12-22T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20231222-7-xian-cheng-guan-li-yi-ji-bei-lun.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20231222-7-xian-cheng-guan-li-yi-ji-bei-lun.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>7、线程管理以及悖论</h1>
+          <p class="post-deck">Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</p>
+          <div class="post-meta">
+            <time datetime="2023-12-22">2023.12.22</time>
+            <span>RTOS</span>
+            <span>1 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>Github链接：<a href="<a href="https://github.com/HawkJ02/RT-Thread_Handmade">https://github.com/HawkJ02/RT-Thread_Handmade</a>">HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</a></p>
+
+          <p>如何做一个线程管理大师呢，在之前手搓RTT的时候，我们的线程是通过就绪表（一个32位的变量，每一位对应一个优先级列表）来进行管理的，然后每个优先级又使用时间片来进行管理。</p>
+
+          <p>线程们是有多种状态：</p>
+
+          <ul>
+          <li>初始态（RT\_THREAD\_INIT）：创建线程的时候会将线程的状态设置为初始态。</li>
+          <li>就绪态（RT\_THREAD\_READY）：该线程在就绪列表中，就绪的线程已经具备执行的能力，只等待CPU。</li>
+          <li>运行态（RT\_THREAD\_RUNNING）：该线程正在执行，此时它占用处理器。</li>
+          <li>挂起态（RT\_THREAD\_SUSPEND）：如果线程当前正在等待某个时序或外部中断，我们就说这个线程处于 挂起状态，该线程不在就绪列表中。包含线程被挂起、线程被延时、线程正在等待信号量、读写队列或者等 待读写事件等。</li>
+          <li>关闭态（RT\_THREAD\_CLOSE）：该线程运行结束，等待系统回收资源。</li>
+          </ul>
+
+          <p><img src="../../images/blog/2023/12/image-53.png" alt="" loading="lazy"></p>
+
+          <h2>线程挂起的悖论</h2>
+
+          <p>RTT的线程挂起是一个悖论，我认为是由于其启动方式还有内核调度的局限性。简单来说，如果有两个线程，首先在线程1运行的时候，线程2就处于挂起态，所以线程1想要去挂起一个处于挂起状态的线程根本不可能。</p>
+
+          <p><img src="../../images/blog/2023/12/image-54-1024x788.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2023/12/image-55.png" alt="" loading="lazy"></p>
+
+          <p>LED2线程尝试挂起LED1（LED2优先级低于LED1）</p>
+
+          <p><img src="../../images/blog/2023/12/image-57.png" alt="" loading="lazy"></p>
+
+          <p>LED1挂起自己</p>
+
+          <p>当LED1将自己挂起之后，内核会自动调度线程就绪优先级列表中最高优先级的线程。</p>
+
+          <p>KEY线程虽然无法挂起LED1，但是可以恢复LED1：</p>
+
+          <p><img src="../../images/blog/2023/12/image-58.png" alt="" loading="lazy"></p>
+
+          <p>rt\_thread\_delay()的挂起和suspend()的挂起是不一样的，delay的底层是thread会创建定时器并被添加到timer里面，当发生延时的时候，系统滴答定时器会每隔一定时间自增，然后扫描timer列表中有无定时到期的线程，然后进入timeout函数：</p>
+
+          <p><img src="../../images/blog/2023/12/image-59.png" alt="" loading="lazy"></p>
+
+          <p>线程定时器链表扫描</p>
+
+          <p><img src="../../images/blog/2023/12/image-60.png" alt="" loading="lazy"></p>
+
+          <p>timeout函数</p>
+
+          <p>而suspend就无线程问津了，只能通过主动恢复的方式加入到就绪链表。</p>
+
+          <h2>鞭尸操作</h2>
+
+          <p>我愿称之为“鞭尸”，这样就可以把别的线程从阻塞延时的挂起中拖出来，然后狠狠地给他挂起！</p>
+
+          <p><img src="../../images/blog/2023/12/image-61.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2023/12/image-62.png" alt="" loading="lazy"></p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

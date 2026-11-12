@@ -396,6 +396,15 @@ a { color: inherit; }
   line-height: 1.7;
 }
 
+.post-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 28px auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
 @media (max-width: 760px) {
   .shell,
   .post-shell { width: min(100% - 36px, 980px); }

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="在每一届蓝桥杯的赛题中都会使用到B1-B4这四个按键中的几个，那么在没有参考的情况下，我认为理解是最好的记忆方式。……">
+  <title>按键模块 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="按键模块">
+  <meta property="og:description" content="在每一届蓝桥杯的赛题中都会使用到B1-B4这四个按键中的几个，那么在没有参考的情况下，我认为理解是最好的记忆方式。……">
+  <meta property="article:published_time" content="2024-01-15T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20240115-an-jian-mo-kuai.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20240115-an-jian-mo-kuai.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>按键模块</h1>
+          <p class="post-deck">在每一届蓝桥杯的赛题中都会使用到B1-B4这四个按键中的几个，那么在没有参考的情况下，我认为理解是最好的记忆方式。……</p>
+          <div class="post-meta">
+            <time datetime="2024-01-15">2024.01.15</time>
+            <span>单片机</span>
+            <span>1 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>在每一届蓝桥杯的赛题中都会使用到B1-B4这四个按键中的几个，那么在没有参考的情况下，我认为理解是最好的记忆方式。</p>
+
+          <h2>基础模块</h2>
+
+          <p>基础模块包含了按键触发以及消抖，本模块提供一种标准化的写法，并使用逻辑消抖，可能乍一看很复杂，但是理解之后你就能得心应手地在考场中写出来。</p>
+
+          <p>首先是最基础的读取四个按键当前值的操作，我使用的是类似于操作系统中的就序列表的操作：用一个8位二进制数的低四位分别存储四个按键的键值。</p>
+
+          <p><img src="../../images/blog/2024/01/image-120-1024x212.png" alt="" loading="lazy"></p>
+
+          <p>例子：四个按键在没有被按下时都是高电平，则二进制数-1111 1111-（高四位无效），如果第一个按键按下（该按键对应位变成低电平）就会变成二进制数<br>\-1111 1110-，在理解这个的基础上我们就继续处理数据。</p>
+
+          <p>接着我们需要声明三个全局变量：</p>
+
+          <p><img src="../../images/blog/2024/01/image-119.png" alt="" loading="lazy"></p>
+
+          <p>然后我们开始重头戏，逻辑消抖，处理数据，<strong>详见注释</strong>：</p>
+
+          <p><img src="../../images/blog/2024/01/image-121-1024x283.png" alt="" loading="lazy"></p>
+
+          <p>例子：当key\_Old = 0xFF （初始状态，没有按键被按下），按键B1被按下，<br>getKey = 0XFE（二进制-1111 1110）<br>key\_temp = (0XFE | 0XF0) ^ 0XFF = 0XFE ^ 0XFF （异或就是找不同）<br>\= 0X01（二进制-0000 0001）<br>接着keyFalling首先通过(key\_temp ^ Key\_Old)找上一次数据与这次数据的不同，如果确实有所改变，那么就把有变化的那个地方赋值给Key\_falling（key\_temp的计算结果），KeyRising同理。<br>最后将当前值赋值给Key\_Old。实现了逻辑消抖的功能。</p>
+
+          <p>此时，Falling或者Rising中存储的就是改变的位</p>
+
+          <ul>
+          <li>值为1（0000 0001）——KEY1</li>
+          <li>值为2（0000 0010）——KEY2</li>
+          <li>值为4（0000 0100）——KEY3</li>
+          <li>值位8（0000 1000）——KEY4</li>
+          </ul>
+
+          <p>最后就是使用switch语句检测Key\_Rising，也就是按键松开的时候，<strong>记得break;</strong></p>
+
+          <p><img src="../../images/blog/2024/01/image-123.png" alt="" loading="lazy"></p>
+
+          <p>后面如果有做到类似的题目会拓展双击、短按、长按等代码。</p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

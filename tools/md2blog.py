@@ -75,6 +75,8 @@ RE_CODE = re.compile(r"`([^`]+)`")
 RE_BOLD = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
 RE_URL = re.compile(r"https?://[A-Za-z0-9\-._~:/?#\[\]@!$&'()*+,;=%]+")
 URL_TRAILING_PUNCT = "。，、；：！？）】」〉》\"'…"
+RE_IMG = re.compile(r"!\[([^\]]*?)\]\(([^)\s]+)\)")       # ![](图) → <img>（惰性，防连续多图跨匹配）
+RE_LINK = re.compile(r"\[([^\]]+?)\]\(([^)\s]+)\)")       # [文字](链接) → <a>（含站内相对路径）
 
 GEN_NAME_RE = re.compile(r"^\d{8}-[a-z0-9-]+\.html$")
 
@@ -198,11 +200,13 @@ def auto_link(m):
 
 
 def inline(text):
-    """行内处理：引号归一化 → HTML 转义 → 行内代码 → 加粗 → 裸 URL → 硬换行。"""
+    """行内处理：引号归一化 → HTML 转义 → 图片 → 链接 → 行内代码 → 加粗 → 裸 URL → 硬换行。"""
     text = normalize_quotes(text)
     text = (text.replace("&", "&amp;")
                 .replace("<", "&lt;")
                 .replace(">", "&gt;"))
+    text = RE_IMG.sub(lambda m: f'<img src="{m.group(2)}" alt="{m.group(1)}" loading="lazy">', text)
+    text = RE_LINK.sub(lambda m: f'<a href="{m.group(2)}">{m.group(1)}</a>', text)
     text = RE_CODE.sub(lambda m: f"<code>{m.group(1)}</code>", text)
     text = RE_BOLD.sub(lambda m: f"<strong>{m.group(1)}</strong>", text)
     text = RE_URL.sub(auto_link, text)

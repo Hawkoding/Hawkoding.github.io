@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="https://leetcode.cn/problems/reverse-linked-list/?……">
+  <title>206.反转链表 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="206.反转链表">
+  <meta property="og:description" content="https://leetcode.cn/problems/reverse-linked-list/?……">
+  <meta property="article:published_time" content="2024-05-30T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20240530-206-fan-zhuan-lian-biao.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20240530-206-fan-zhuan-lian-biao.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>206.反转链表</h1>
+          <p class="post-deck">https://leetcode.cn/problems/reverse-linked-list/?……</p>
+          <div class="post-meta">
+            <time datetime="2024-05-30">2024.05.30</time>
+            <span>编程</span>
+            <span>1 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <h2>题目</h2>
+
+          <p><a href="<a href="https://leetcode.cn/problems/reverse-linked-list/?envType=study-plan-v2&amp;envId=top-100-liked">https://leetcode.cn/problems/reverse-linked-list/?envType=study-plan-v2&amp;envId=top-100-liked</a>">反转链表题目链接</a></p>
+
+          <h2>解法</h2>
+
+          <p>反转链表是个经典题型，主要是利用到单向链表的特性，如果第一次做没做出来也正常(me too~)，因为链表的特性比较特殊，还是要掌握适当的方法才能够更好的掌握链表相关的。<br>先看代码：``<code>struct ListNode* reverseList(struct ListNode* head) {    struct ListNode* new = NULL;    struct ListNode* cur = head;    while(cur != NULL)    {        //保存下一个节点信息        struct ListNode* next = cur-&gt;next;        cur-&gt;next = new;        new = cur;        cur = next;    }    return new;}</code>``再看分析过程，记住上面的几个结构体指针new cur next。<br>首先我的思路和常规的理解不太一样，我们从链表的本质出发<br>链表最常见的操作就是插入和删除，以删除举例，就像是离职交接工作一样，分两步走：第一步：首先让指向杰哥的同事去指向杰哥指向的同事，听起来很绕口吧~可以想象一下，当你要离职的时候，有个同事A来找你，你就会说：“你去找B去！我辞职了！”，这个时候，就会从A-&gt;你-&gt;B，多出一个A-&gt;B。这就是交接的动作。<br>第二步：你不再指向B，而是指向新公司的C，这样就完成了所有离职的手续，并加入了新公司。<br>这就是本题的思路。<br>接着循环，大家可以发现第六步和第一步的造型基本没差、<br></p>
+
+          <h2>结果</h2>
+
+          <p>还不错，这样解就可以了</p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

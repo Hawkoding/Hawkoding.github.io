@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="近几年的赛题都没有考察到输入捕获，所以今年省赛是有一定的概率考察到的。在本章节中，我将使用两种方式进行输入捕获。名词介绍，输入捕获：INPUT\_CAPTURE。">
+  <title>使用TIM测量脉冲宽度以及频率——输入捕获 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="使用TIM测量脉冲宽度以及频率——输入捕获">
+  <meta property="og:description" content="近几年的赛题都没有考察到输入捕获，所以今年省赛是有一定的概率考察到的。在本章节中，我将使用两种方式进行输入捕获。名词介绍，输入捕获：INPUT\_CAPTURE。">
+  <meta property="article:published_time" content="2024-03-10T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20240310-shi-yong-tim-ce-liang-mai-chong-kuan-du.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20240310-shi-yong-tim-ce-liang-mai-chong-kuan-du.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>使用TIM测量脉冲宽度以及频率——输入捕获</h1>
+          <p class="post-deck">近几年的赛题都没有考察到输入捕获，所以今年省赛是有一定的概率考察到的。在本章节中，我将使用两种方式进行输入捕获。名词介绍，输入捕获：INPUT\_CAPTURE。</p>
+          <div class="post-meta">
+            <time datetime="2024-03-10">2024.03.10</time>
+            <span>单片机</span>
+            <span>2 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>近几年的赛题都没有考察到输入捕获，所以今年省赛是有一定的概率考察到的。在本章节中，我将使用两种方式进行输入捕获。</p>
+
+          <p>名词介绍，输入捕获：INPUT\_CAPTURE。</p>
+
+          <h2>方法1 直接与间接IC捕获</h2>
+
+          <p>训练板上有两个信号发生器 XL555,分别是 U7 和 U8。通过跳线 J9 将 PB4 连接到 U7 上,通过跳线 J10 将 PA15 脚连接到 U8 上。R39 和 R40 是电位器,旋转电位器可以改变 U7、U8的输出波形。U7 连接的 PB4 可配置成 TIM3 的 CH1 的功能,但是前面 TIM3 的 CH1 已经配置在 PA6管脚做 PWM 输出功能了,而 PA15 可配置为 TIM2 的 CH1 未被占用。故以 U8 为例,使用定时器的输入捕获功能测量 U8(XL888)的周期、脉冲宽度(占空比)。若是要对输出的 PWM 波进行测量,此时需将 PWM 的输出端(PA6/PA7)连接到捕获信号输入端(PA15)。</p>
+
+          <p><img src="../../images/blog/2024/03/image-73-1024x534.png" alt="" loading="lazy"></p>
+
+          <p><strong>我们使用PA15测量频率输出2。</strong></p>
+
+          <p>首先我们配置TIM2，PA15连接着TIM2\_CH1。</p>
+
+          <p><img src="../../images/blog/2024/03/image-74-1024x536.png" alt="" loading="lazy"></p>
+
+          <h2>模式选择</h2>
+
+          <p>不妨以计数器向上计数为例，将它配置在复位从模式。比方说当计数器计数到某个数据的时候，来了个触发信号，计数器不再继续往上计数，而是重新归0后开始计数。当然，计数器的实际复位操作与触发沿之间往往会有个小的延时，这是由于触发信号作为有效触发脉冲的话，还需要经过定时器内的同步电路确认。</p>
+
+          <h2>trigger source</h2>
+
+          <p>每一个定时就像沙漏一样，我们设定多长时间的定时就相当于放入了多少沙子。触发类似于中断的作用，在沙漏计时的中途我们提前将其翻转，重新开始计时，那么触发源可能是事情提前结束了，或者其它一些原因。</p>
+
+          <p><img src="../../images/blog/2024/03/image-76.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/03/image-77.png" alt="" loading="lazy"></p>
+
+          <p>TI1FP1的意思是 Trigger input 1 Filter process 1，1代表着channel 1，代表整个TIM2这个定时器的触发输入源就是经过了滤波器的通道1，那么接下来无论是CH1还是CH2的输入都是经过滤波器的通道1信号，也就是来自于PA15。</p>
+
+          <p><img src="../../images/blog/2024/03/image-75.png" alt="" loading="lazy"></p>
+
+          <h2>通道设置</h2>
+
+          <p><img src="../../images/blog/2024/03/image-79.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/03/image-78.png" alt="" loading="lazy"></p>
+
+          <p>在以上请的触发模式设置下，CH2是连接到CH1的，所以设置CH2为间接输入捕获模式。</p>
+
+          <h2>TIM2参数配置</h2>
+
+          <p>开始时CNT = 0，定时器每1us会使CNT++。PWM经过滤波后从CH1输入进来，检测到上升沿后，会将此时CNT的值放入CCR1，并且将CNT的值置0。那么显而易见，两个上升沿之间就是一个周期，也就是CCR1 - 0 = CCR1，所以每次获取CCR1的值就可以获取到PWM波的周期。</p>
+
+          <p>由于输入信号的源是来自于CH1，CH2对于这个信号只能做检测，而不能像上述CH1检测到上升沿之后将CNT的值置0，CH2是不能操作的，所以CH2在检测到下降沿之后就只会将CNT的值的保存至CCR2。显而易见，下降沿与上升沿之间的距离就是高电平脉冲的时间，也就是有效电平时间（脉冲宽度）= CCR2。</p>
+
+          <p>那么占空比就是 CCR2 / CCR1 ，即有效电平宽度 / 周期 。</p>
+
+          <p><img src="../../images/blog/2024/03/image-80.png" alt="" loading="lazy"></p>
+
+          <h2>代码实验</h2>
+
+          <p>在初始化的时候启动：</p>
+
+          <p><img src="../../images/blog/2024/03/image-81.png" alt="" loading="lazy"></p>
+
+          <p>在运行过程中，获取CCR1和CCR2的值：</p>
+
+          <p><img src="../../images/blog/2024/03/image-82.png" alt="" loading="lazy"></p>
+
+          <p>数据处理：</p>
+
+          <p><img src="../../images/blog/2024/03/image-83.png" alt="" loading="lazy"></p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

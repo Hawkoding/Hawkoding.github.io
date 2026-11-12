@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Github链接：https://github.com/JiegeLinux/RT-Thread_Handmade&quot;&gt;JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thre……">
+  <title>1、线程定义与切换 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="1、线程定义与切换">
+  <meta property="og:description" content="Github链接：https://github.com/JiegeLinux/RT-Thread_Handmade&quot;&gt;JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thre……">
+  <meta property="article:published_time" content="2023-12-07T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20231207-1-xian-cheng-ding-yi-yu-qie-huan.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20231207-1-xian-cheng-ding-yi-yu-qie-huan.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>1、线程定义与切换</h1>
+          <p class="post-deck">Github链接：https://github.com/JiegeLinux/RT-Thread_Handmade"&gt;JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thre……</p>
+          <div class="post-meta">
+            <time datetime="2023-12-07">2023.12.07</time>
+            <span>RTOS</span>
+            <span>4 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>Github链接：<a href="<a href="https://github.com/JiegeLinux/RT-Thread_Handmade">https://github.com/JiegeLinux/RT-Thread_Handmade</a>">JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</a></p>
+
+          <p>这是手搓RT-Thread系列的第一章——线程的定义与切换。为什么选择RT-Thread呢，主要还是因为它的结构个人认为相较于FreeRTOS更加清晰，野火的资料也很清晰。实践出真知，学代码，看是没有用的，即使是定义，也要一点一点地敲出来！</p>
+
+          <p>推荐野火的教程：[\[野火\]RT-Thread 内核实现与应用开发实战—基于STM32 — \[野火\]RT-Thread内核实现与应用开发实战——基于STM32 文档 (embedfire.com)](<a href="https://doc.embedfire.com/rtos/rtthread/zh/latest/index.html)">https://doc.embedfire.com/rtos/rtthread/zh/latest/index.html)</a></p>
+
+          <p>本文的思路与野火不尽相同，多是自己的一些总结和重点划分，从代码的运行过程以及仿真捋一遍思路。代码部分建议参考野火，本文就不再赘述。让我们开始吧！</p>
+
+          <h2>从main()开始</h2>
+
+          <p>首先我们可以观察一下PC（程序计数器，代表着运行的地址）和SP（堆栈指针寄存器，代表着当前堆栈的栈顶，堆栈是向下生长的）这两个寄存器。</p>
+
+          <p>我觉得我们对于计算机内部得有一个想象，比如对于内存的使用分区：</p>
+
+          <p>首先我们进入<strong>调度器初始化</strong>，对于大部分RTOS而言，实时操作系统就是一种不断切换以制造实时的感觉，比如让闪电侠同时去拯救世界和敲代码“Hello world”，他就是在两个任务中不断地进行切换，打一只怪兽，就飞速跑回电脑前敲“H”，然后再去打一只怪兽，再飞速跑回电脑前敲“e”。因为他是闪电侠，他在切换时间和完成任务片的时间都极短，所以在老板和同事看来，他一直都坐在座位上敲代码，在队友看来，他也一直在拯救世界。<br>在闪电侠不断切换任务的过程中就涉及到了调度器，也就是什么时候去敲代码，什么时候去拯救世界，闪电侠也需要一个闹钟。</p>
+
+          <p>此时调度器的作用就体现出来了，我们先定义最大32个任务的链表数组，这个数组就是所有的任务的优先级进行排序的，比如rt\_thread\_priority\_table\[0\]代表最高优先级，rt\_thread\_priority\_table\[31\]代表最低优先级，而这些table的本质是链表：</p>
+
+          <p><img src="<a href="https://doc.embedfire.com/rtos/rtthread/zh/latest/_images/switch004.png">https://doc.embedfire.com/rtos/rtthread/zh/latest/_images/switch004.png</a>" alt="线程轮流切换波形图2" loading="lazy"></p>
+
+          <p>链表可以理解为有前后两个指针的节点所组成的链，向前指向上一个节点，向后指向下一个节点，就在相互指向的过程中，就组成了一条链，一环扣一环。通过这32个链表，就能将众多任务按照一定的顺序捆绑在一起，我们只需要知道前面一个任务和下一个任务的在链表中节点的位置在哪里，就可以通过这个节点获取到这个任务在堆栈中的指针的位置，从而将这个任务加载到cpu中运行，以此循环，不断切换。</p>
+
+          <h2>线程初始化</h2>
+
+          <p>一个线程包含6个主要参数，由结构体进行管理：</p>
+
+          <p>使用结构体进行管理的好处之一就是，上述提到的通过节点获取线程栈指针，使用宏定义定义了一个，通过节点的地址和节点在结构体内相对于线程栈指针的偏移量计算线程栈指针位置：</p>
+
+          <p>已知一个结构体中成员的地址，反推出该结构体的首地址，就是用（member的实际地址）减去（假设该结构体的首地址是0，再指向member的虚拟地址，也就是member相对于首地址的偏移量）。</p>
+
+          <p>在初始化线程的过程中最重要的就是开辟线程在栈上的位置，调用函数rt\_hw\_stack\_init()。这个函数的主要作用就是①对齐②开辟16个字的栈空间以放置r0-r15寄存器的值。</p>
+
+          <p>这16个寄存器就可以看作一个线程的特征，有这16个寄存器的值我们就可以知道这个线程是怎么样的。</p>
+
+          <p>将线程初始化完成后便将其插入链表：</p>
+
+          <p>我觉得野火的图不一定正确，我认为插入之后是这样子的，初始节点与插入的线程节点相互指向：</p>
+
+          <p>将两个线程都初始化之后，我们进入下一步。</p>
+
+          <h2>线程调度器！启动！</h2>
+
+          <p>首先我们通过上面提到的（通过节点获取堆栈指针）的方式，获取第一个我们需要运行的线程的sp堆栈指针。</p>
+
+          <p>进入汇编函数rt\_hw\_context\_switch\_to，如果了解了基本的LDR,STR等命令，其实汇编并没有那么难，而且很简单，就像英语直译一样，相较而言还没有复杂的语法，都是大白话。</p>
+
+          <p>但是，在这一部分指针就尤为重要了，在内存里基本都是由指针去控制，你要记住，比如你家是在滨湖区蠡湖大道，那么蠡湖大道就是你家的地址，但是蠡湖大道写在了一本地址簿上，那么地址簿就是蠡湖大道的地址。别人如果要访问你家，他就要先找到地址簿，然后在地址簿上找到蠡湖大道，最后在蠡湖大道找到你家。</p>
+
+          <p>比如在下图中，就是通过两次查地址最终找到sp，然后将线程栈指针sp（操作前先递减）指向的内容加载到cpu寄存器r4~r11。</p>
+
+          <p>线程切换的本质就是这16个寄存器的保存与读取。</p>
+
+          <p>r4-r11寄存器是需要手动保存和读取的，其他寄存器是内核自动存储和读取的。详细代码的注释已经十分细致了，参见文首的链接。</p>
+
+          <p>在这个上下文切换的汇编程序中，我们首先设置了中断的异常优先级，然后触发异常，进入中断处理函数。</p>
+
+          <p>经过这一系列流程后，保存现场，恢复现场，最终实现线程的切换。</p>
+
+          <h2>运行第一个线程</h2>
+
+          <p>因为r15寄存器是pc（程序计数器），r14寄存器是lr（链接寄存器），在恢复现场后，由于已经获得了程序的入口。</p>
+
+          <p>所以会直接跳转到线程1的入口函数：</p>
+
+          <h2>实验结果</h2>
+
+          <p>可见，程序在极短的时间内不断切换、运行，实现了实时操作系统的效果。</p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Github链接：https://github.com/HawkJ02/RT-Thread_Handmade&quot;&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……">
+  <title>10、邮箱与软件定时器 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="10、邮箱与软件定时器">
+  <meta property="og:description" content="Github链接：https://github.com/HawkJ02/RT-Thread_Handmade&quot;&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……">
+  <meta property="article:published_time" content="2023-12-24T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20231224-10-you-xiang-yu-ruan-jian-ding-shi-qi.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20231224-10-you-xiang-yu-ruan-jian-ding-shi-qi.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>10、邮箱与软件定时器</h1>
+          <p class="post-deck">Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</p>
+          <div class="post-meta">
+            <time datetime="2023-12-24">2023.12.24</time>
+            <span>RTOS</span>
+            <span>1 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>Github链接：<a href="<a href="https://github.com/HawkJ02/RT-Thread_Handmade">https://github.com/HawkJ02/RT-Thread_Handmade</a>">HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</a></p>
+
+          <p>邮箱就是邮箱，线程间可以通过发邮件的形式进行通信，与消息队列类似，但是比消息队列更加节省空间，因为邮箱中存储的都是32位的地址，就像是邮寄圣诞卡片一样，我不需要把超级无敌大的圣诞礼物塞到邮箱里，而是把这个礼物在屋子里的位置写在卡片上，然后放到邮箱里面，那么朋友就可以根据这个地址去找到礼物，这样便提高了效率。</p>
+
+          <p>下图可见，线程和终端将圣诞卡片放到邮箱中，in\_offset会偏移，可以选择FIFO模式或者PRIO模式，选择是先进先出还是优先级，发送和接收线程如果在等待都会挂起在邮箱上，接受时接收线程会把卡片取走，out\_offset也会偏移，然后接收线程可以通过卡片上的地址获取到数据。</p>
+
+          <p><img src="../../images/blog/2023/12/image-115-1024x353.png" alt="" loading="lazy"></p>
+
+          <p>软件定时器在以前的章节中已经详细介绍过了，看看现象叭！</p>
+
+          <p><img src="../../images/blog/2023/12/image-116.png" alt="" loading="lazy"></p>
+
+          <h2>发射结构体</h2>
+
+          <p>在定义时：<br><code>// 定义消息结构体</code><br><code>struct msg {</code><br><code>rt_uint8_t *data_ptr; // 指向数据块的指针</code><br><code>rt_uint32_t data_size; // 数据块的长度</code><br><code>};</code></p>
+
+          <p>在发射线程中：<br><code>struct msg* msg_ptr;<br>// 分配消息结构体内存<br>msg_ptr = (struct msg*)malloc(sizeof(struct msg));<br>// 假设有一段数据需要发送<br>char data[] = "Hello, Embedded Systems!";<br>int data_length = sizeof(data);<br>// 填充消息结构体<br>msg_ptr-&gt;data_ptr = (rt_uint8_t*)data;<br>msg_ptr-&gt;data_size = data_length;<br>// 发送消息指针给消息邮箱<br>rt_kprintf("Sending message...\n");<br>rt_mb_send(&amp;mb, (rt_uint32_t)msg_ptr);</code><br>rt\_free(<code>msg_ptr</code>);<br></p>
+
+          <p>在接收线程中：<br><code>struct msg* received_msg_ptr;<br>if (rt_mb_recv(key_mail, (rt_uint32_t_)&amp;received_msg_ptr,RT_WAITING_FOREVER) == RT_EOK) {_<br>// "Received message: %.s\n" 是格式化字符串，其中 %.s 是格式控制符。<br>//在这里，%.s 用来输出长度可变的字符串，前面的 .* 会被后面传入的参数替换。<br>//具体来说，%.*s 中的 * 表示长度由后面的参数指定，而 s 表示参数是一个字符串。<br>rt_kprintf("Received message: %.*s\n", received_msg_ptr-&gt;data_size, received_msg_ptr-&gt;data_ptr);<br>// 释放内存<br>rt_free(received_msg_ptr);<br>}</code></p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

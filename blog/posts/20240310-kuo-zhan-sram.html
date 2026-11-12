@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="## 语言：C编译器：Keil5stm32库：HAL-1.5.x串口：UART1 ```C//sram.c#include &quot;sram.h&quot;#include &quot;delay.h&quot;////////////……">
+  <title>扩展SRAM — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="扩展SRAM">
+  <meta property="og:description" content="## 语言：C编译器：Keil5stm32库：HAL-1.5.x串口：UART1 ```C//sram.c#include &quot;sram.h&quot;#include &quot;delay.h&quot;////////////……">
+  <meta property="article:published_time" content="2024-03-10T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20240310-kuo-zhan-sram.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20240310-kuo-zhan-sram.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>扩展SRAM</h1>
+          <p class="post-deck">## 语言：C编译器：Keil5stm32库：HAL-1.5.x串口：UART1 ```C//sram.c#include "sram.h"#include "delay.h"////////////……</p>
+          <div class="post-meta">
+            <time datetime="2024-03-10">2024.03.10</time>
+            <span>单片机</span>
+            <span>1 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <h2>扩展SRAM</h2>
+
+          <p>##</p>
+
+          <h2>代码示例</h2>
+
+          <p>语言：C<br>编译器：Keil5<br>stm32库：HAL-1.5.x<br>串口：UART1</p>
+
+          <p>```C//sram.c#include "sram.h"#include "delay.h"////////////////////////////////////////////////////////////////////////////////////外部SRAM 驱动代码<br>//版本：V1.0<br>//////////////////////////////////////////////////////////////////////////////////SRAM_HandleTypeDef SRAM_Handler;    //SRAM句柄</p>
+
+          <p>//SRAM初始化void SRAM_Init(void){	GPIO_InitTypeDef GPIO_Initure;	FSMC_NORSRAM_TimingTypeDef FSMC_ReadWriteTim;</p>
+
+          <p>    __HAL_RCC_FSMC_CLK_ENABLE();                //使能FSMC时钟    __HAL_RCC_GPIOD_CLK_ENABLE();               //使能GPIOD时钟    __HAL_RCC_GPIOE_CLK_ENABLE();               //使能GPIOE时钟    __HAL_RCC_GPIOF_CLK_ENABLE();               //使能GPIOF时钟    __HAL_RCC_GPIOG_CLK_ENABLE();               //使能GPIOG时钟</p>
+
+          <p>	//PD0,1,4,5,8~15    GPIO_Initure.Pin=GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_8|\					 GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13|\					 GPIO_PIN_14|GPIO_PIN_15;<br>	  GPIO_Initure.Mode=GPIO_MODE_AF_PP;          //推挽复用    GPIO_Initure.Pull=GPIO_PULLUP;              //上拉    GPIO_Initure.Speed=GPIO_SPEED_HIGH;         //高速    GPIO_Initure.Alternate=GPIO_AF12_FSMC;     	//复用为FSMC<br>	  HAL_GPIO_Init(GPIOD,&amp;GPIO_Initure);</p>
+
+          <p>	//PE0,1,7~15    GPIO_Initure.Pin=GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9|\					 GPIO_PIN_10| GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|\					 GPIO_PIN_15;<br>    HAL_GPIO_Init(GPIOE,&amp;GPIO_Initure);<br></p>
+
+          <p>	//PF0~5,12~15    GPIO_Initure.Pin=GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|\					 GPIO_PIN_5|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;<br>    HAL_GPIO_Init(GPIOF,&amp;GPIO_Initure);<br></p>
+
+          <p>	//PG0~5,10    GPIO_Initure.Pin=GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_10;<br>    HAL_GPIO_Init(GPIOG,&amp;GPIO_Initure);<br></p>
+
+          <p>	SRAM_Handler.Instance=FSMC_NORSRAM_DEVICE;<br>	SRAM_Handler.Extended=FSMC_NORSRAM_EXTENDED_DEVICE;<br></p>
+
+          <p>	SRAM_Handler.Init.NSBank=FSMC_NORSRAM_BANK3;     					//使用NE3	SRAM_Handler.Init.DataAddressMux=FSMC_DATA_ADDRESS_MUX_DISABLE; 	//地址/数据线不复用	SRAM_Handler.Init.MemoryType=FSMC_MEMORY_TYPE_SRAM;   				//SRAM	SRAM_Handler.Init.MemoryDataWidth=FSMC_NORSRAM_MEM_BUS_WIDTH_16; 	//16位数据宽度	SRAM_Handler.Init.BurstAccessMode=FSMC_BURST_ACCESS_MODE_DISABLE; 	//是否使能突发访问,仅对同步突发存储器有效,此处未用到	SRAM_Handler.Init.WaitSignalPolarity=FSMC_WAIT_SIGNAL_POLARITY_LOW;	//等待信号的极性,仅在突发模式访问下有用	SRAM_Handler.Init.WaitSignalActive=FSMC_WAIT_TIMING_BEFORE_WS;   	//存储器是在等待周期之前的一个时钟周期还是等待周期期间使能NWAIT	SRAM_Handler.Init.WriteOperation=FSMC_WRITE_OPERATION_ENABLE;    	//存储器写使能	SRAM_Handler.Init.WaitSignal=FSMC_WAIT_SIGNAL_DISABLE;           	//等待使能位,此处未用到	SRAM_Handler.Init.ExtendedMode=FSMC_EXTENDED_MODE_DISABLE;        	//读写使用相同的时序	SRAM_Handler.Init.AsynchronousWait=FSMC_ASYNCHRONOUS_WAIT_DISABLE;	//是否使能同步传输模式下的等待信号,此处未用到	SRAM_Handler.Init.WriteBurst=FSMC_WRITE_BURST_DISABLE;           	//禁止突发写	SRAM_Handler.Init.ContinuousClock=FSMC_CONTINUOUS_CLOCK_SYNC_ASYNC;</p>
+
+          <p>	//FMC读时序控制寄存器	FSMC_ReadWriteTim.AddressSetupTime=0x00;       	//地址建立时间（ADDSET）为0+1个HCLK	FSMC_ReadWriteTim.AddressHoldTime=0x00;			//地址保持时间（ADDHLD）模式A未用到	FSMC_ReadWriteTim.DataSetupTime=0x08;			//数据保存时间为8+1个HCLK	=6*8=48ns	FSMC_ReadWriteTim.BusTurnAroundDuration=0X00;	FSMC_ReadWriteTim.AccessMode=FSMC_ACCESS_MODE_A;//模式A	HAL_SRAM_Init(&amp;SRAM_Handler,&amp;FSMC_ReadWriteTim,&amp;FSMC_ReadWriteTim);}</p>
+
+          <p>//在指定地址(WriteAddr+Bank1_SRAM3_ADDR)开始,连续写入n个字节.//pBuffer:字节指针//WriteAddr:要写入的地址//n:要写入的字节数void FSMC_SRAM_WriteBuffer(u8 *pBuffer,u32 WriteAddr,u32 n){	for(;n!=0;n--)	{		*(vu8*)(Bank1_SRAM3_ADDR+WriteAddr)=*pBuffer;		WriteAddr++;		pBuffer++;	}}</p>
+
+          <p>//在指定地址((WriteAddr+Bank1_SRAM3_ADDR))开始,连续读出n个字节.//pBuffer:字节指针//ReadAddr:要读出的起始地址//n:要写入的字节数void FSMC_SRAM_ReadBuffer(u8 *pBuffer,u32 ReadAddr,u32 n){	for(;n!=0;n--)	{		*pBuffer++=*(vu8*)(Bank1_SRAM3_ADDR+ReadAddr);		ReadAddr++;	}}</p>
+
+          <p>```</p>
+
+          <p>```Csram.h#ifndef _SDRAM_H#define _SDRAM_H#include "sys.h"////////////////////////////////////////////////////////////////////////////////////外部SRAM 驱动代码//版本：V1.0<br>//////////////////////////////////////////////////////////////////////////////////</p>
+
+          <p>extern SRAM_HandleTypeDef SRAM_Handler;    //SRAM句柄</p>
+
+          <p>//使用NOR/SRAM的 Bank1.sector3,地址位HADDR[27,26]=10//对IS61LV25616/IS62WV25616,地址线范围为A0~A17//对IS61LV51216/IS62WV51216,地址线范围为A0~A18#define Bank1_SRAM3_ADDR    ((u32)(0x68000000))</p>
+
+          <p>void SRAM_Init(void);void FSMC_SRAM_WriteBuffer(u8 *pBuffer,u32 WriteAddr,u32 n);void FSMC_SRAM_ReadBuffer(u8 *pBuffer,u32 ReadAddr,u32 n);#endif</p>
+
+          <p>```</p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

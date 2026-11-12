@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="本模块取自G4开发板，f1开发板的配置类似。 G4开发板的ADC主要有以下3个应用，配置都类似。由电路图可知,训练板上有三路模拟信号输入:">
+  <title>ADC模块 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="ADC模块">
+  <meta property="og:description" content="本模块取自G4开发板，f1开发板的配置类似。 G4开发板的ADC主要有以下3个应用，配置都类似。由电路图可知,训练板上有三路模拟信号输入:">
+  <meta property="article:published_time" content="2024-02-28T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20240228-adc-mo-kuai.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20240228-adc-mo-kuai.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>ADC模块</h1>
+          <p class="post-deck">本模块取自G4开发板，f1开发板的配置类似。 G4开发板的ADC主要有以下3个应用，配置都类似。由电路图可知,训练板上有三路模拟信号输入:</p>
+          <div class="post-meta">
+            <time datetime="2024-02-28">2024.02.28</time>
+            <span>单片机</span>
+            <span>1 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>本模块取自G4开发板，f1开发板的配置类似。</p>
+
+          <p>G4开发板的ADC主要有以下3个应用，配置都类似。</p>
+
+          <p><img src="../../images/blog/2024/02/image-47.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/02/image-48-1024x432.png" alt="" loading="lazy"></p>
+
+          <p>由电路图可知,训练板上有三路模拟信号输入:</p>
+
+          <ol>
+          <li>管脚 PB15 接电位器 R37 分压后的电压信号。</li>
+          <li>管脚 PB12 接电位器 R38 分压后的电压信号。</li>
+          <li>管脚 PB14 接可编程电阻(数字电位器)MCP4017 的 W 端。</li>
+          </ol>
+
+          <p>其中:<br>PB12 为 ADC1 的输入通道 IN11,<br>PB14 为 ADC1 的 IN5;<br>PB15 为 ADC2 的 IN15。</p>
+
+          <h2>赛题举例</h2>
+
+          <p>比如11th省赛赛题中的：</p>
+
+          <p>使用 STM32 微控制器 ADC 通道(PB15)测量竞赛板电位器 R37 输出的模拟电<br>压信号 VR37。</p>
+
+          <h2>第一步 使用stmcubemx配置</h2>
+
+          <p><img src="../../images/blog/2024/02/image-49-1024x925.png" alt="" loading="lazy"></p>
+
+          <p>详细配置：</p>
+
+          <p><img src="../../images/blog/2024/02/image-50.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/02/image-51.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/02/image-52.png" alt="" loading="lazy"></p>
+
+          <p>常用 ADC 函数</p>
+
+          <ol>
+          <li>初始化 ADC:MX\_ADC1\_Init 里调用 HAL\_ADC\_Init 函数完成各参数配置。</li>
+          <li>完成 ADC 校准:G 系列芯片的 ADC 需要用户添加 ADC 校准代码。<br></li>
+          </ol>
+
+          <p>    库 函 数 原 型 : HAL\_StatusTypeDef HAL\_ADCEx\_Calibration\_Start(ADC\_HandleTypeDef \*hadc,<br>    uint32\_t SingleDiff)<br>    参数 1:ADC 句柄,如:&amp;hadc1。<br>    参数 2:ADC\_SINGLE\_ENDED(单端输入)或者 ADC\_DIFFERENTIAL\_ENDED(差分输入)<br>    返回值:HAL\_OK 等状态。</p>
+
+          <ol>
+          <li>启动 ADC 转换:HAL\_StatusTypeDef HAL\_ADC\_Start(ADC\_HandleTypeDef \*hadc)</li>
+          <li>等待 ADC 转换: HAL\_StatusTypeDef HAL\_ADC\_PollForConversion(ADC\_HandleTypeDef \*hadc,<br></li>
+          </ol>
+
+          <p>    uint32\_t Timeout)<br>    参数 Timeout:超时(ms)</p>
+
+          <ol>
+          <li>获取 ADC 转换值:uint32\_t HAL\_ADC\_GetValue(ADC\_HandleTypeDef \*hadc)<br></li>
+          </ol>
+
+          <p>    返回值:ADC 转换值</p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

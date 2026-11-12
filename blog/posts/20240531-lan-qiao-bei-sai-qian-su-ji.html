@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="蓝桥杯这破板子上的外设也就那么多，所以首先我们把所有的外设过一遍，根据历年的真题，如果有重复使用的外设或者操作就不再赘述。并且之前文章中很简单的操作也不再赘述。">
+  <title>蓝桥杯赛前速记 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="蓝桥杯赛前速记">
+  <meta property="og:description" content="蓝桥杯这破板子上的外设也就那么多，所以首先我们把所有的外设过一遍，根据历年的真题，如果有重复使用的外设或者操作就不再赘述。并且之前文章中很简单的操作也不再赘述。">
+  <meta property="article:published_time" content="2024-05-31T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20240531-lan-qiao-bei-sai-qian-su-ji.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20240531-lan-qiao-bei-sai-qian-su-ji.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>蓝桥杯赛前速记</h1>
+          <p class="post-deck">蓝桥杯这破板子上的外设也就那么多，所以首先我们把所有的外设过一遍，根据历年的真题，如果有重复使用的外设或者操作就不再赘述。并且之前文章中很简单的操作也不再赘述。</p>
+          <div class="post-meta">
+            <time datetime="2024-05-31">2024.05.31</time>
+            <span>单片机</span>
+            <span>5 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>蓝桥杯这破板子上的外设也就那么多，所以首先我们把所有的外设过一遍，根据历年的真题，如果有重复使用的外设或者操作就不再赘述。并且之前文章中很简单的操作也不再赘述。</p>
+
+          <p><strong>注意</strong>======</p>
+
+          <p>1、不要在时钟树中修改HSE和HSI，一切遵循默认设置（HSI, 80MHz）即可：</p>
+
+          <p>2、使用串口重定向功能一定要打开microLIB，否则会一直卡在这里！</p>
+
+          <p>3、注意变量static静态变量设置，比如在按键延时的时候，否则会导致每一次进入都会初始化，而我们希望的是保存此时的值。</p>
+
+          <p>4、I2C 一定要记得return</p>
+
+          <p>5、I2C 一定要记得使用waitack而不是sendack，蓝桥杯中没有用到。</p>
+
+          <p>6、I2C一定要记得初始化</p>
+
+          <p>7、RTC的结构体定义一定要定义成类型，不要定义成结构体指针</p>
+
+          <p>8、RTC 注意此处的选择BCD的数据模式写入，而读取则使用BIN二进制的模式读取。</p>
+
+          <p>否则有可能会导致秒超过了60s还在增长的错误。</p>
+
+          <p>9、RTC必须先读取TIME后读取DATE，不然也会遇到未知错误</p>
+
+          <h2>串口</h2>
+
+          <p>第一个想到串口是因为我们在输出的时候最好使用重定义fputc的方式，在接收的时候最好使用空闲中断接收的方式。</p>
+
+          <p>1、基础设置</p>
+
+          <p>注意不需要去死记回调函数在哪里，只需要找到<br>HAL\_UARTEx\_ReceiveToIdle\_DMA 的定义，然后往下翻一点就能在下一个注释中看到。</p>
+
+          <p>2、数据处理</p>
+
+          <p>串口的数据处理建议使用memcmpn库函数，比strcmp更好用些，并且注意尽量在中断服务程序中处理数据，否则就要用什么双缓冲区之类的太麻烦。我的方法是将需要对比的字符串直接定义变量。</p>
+
+          <h2>LED</h2>
+
+          <p>简单的点灯不再赘述，如果要实现闪烁，可以通过两种方式。一种是定时器中断触发，一种是sysTick计数。</p>
+
+          <p>方法一：使用定时器中断的方式，适合于多个led按照同样的频率闪烁。中断触发的回调函数调用定义在如下路径中，追根溯源，我们就可以在主程序中重定义定时器溢出中断回调函数。比起使用it.c程序里面的，使用这个tim回调函数更全面。</p>
+
+          <p>方法二：使用sysTick，不建议，与上述方式一个道理，但是需要将变量extern到说stm32g4xx\_it.c程序中，很不方便。</p>
+
+          <ul>
+          <li>如果LED不闪烁，一定要先查看GPIOD2是否在cubemx中设置，控制锁存器。</li>
+          <li>闪烁、不受控制：修改lcd.c中的三个函数代码，首尾添加存储GPIOC-&gt;ODR并恢复的代码，参考[[BUG]蓝桥杯解决led与lcd显示冲突](./[BUG]蓝桥杯解决led与lcd显示冲突（led乱闪）.md)</li>
+          <li>如果没有精确的定时需求，LED尽量写在LED\_PROC（）即主循环中。<br></li>
+          </ul>
+
+          <p>    如果需要精确定时，则写在systick中断或者在中断中放入led标志位来通知主循环控制led。</p>
+
+          <h2>KEY</h2>
+
+          <p>按键模块相对来说比较简单，主要会涉及到长按与短按的判断，主要是通过调用uwTick变量来判断是否是长按。没什么难度，就是还需要注意最上面“注意”中的提示。</p>
+
+          <p>尽量理解代码的含义：key\_old,key\_rising,key\_down以及函数中的局部变量key\_temp，首先读取每一个GPIO的值，按位排列并| 0xf0，在函数中key\_temp = (get\_key) ^ 0xff，记得加括号，define预定义是直接展开，宁可多加括号。最后key\_rising/falling就是key\_temp^key\_old获取到变化的位，接着&amp;temp或者&amp;（~temp）获取到变化的位置，通过switch（key\_rising）进入对应函数。<br>如果按键需要延时的话可以使用uwTick这个随着systick变化的全局变量，在按键按下的时候记录uwTick的值（全局或者static局部），每一次进入函数的时候都用当时的uwTick减去开始按下的值，当这个值小于长按的界限时，就判断是否存在按键抬起操作。当大于界限时，就不断判断key\_temp的值，确定是哪一个按键按下的。</p>
+
+          <h2>LCD</h2>
+
+          <p>1、LCD首先就是与LED的刷新冲突，最简单的方式就是在lcd运行完之后就关闭所有的led然后进入led服务程序，但是这样只能中午用，否则早晚会出事，因为如果程序中有tim引导的闪烁程序，强行关闭就会多翻转一次led，便会导致乱闪。</p>
+
+          <p>最好的办法就是找到三个关于write寄存器的函数并且在其前后各添加保存GPIOC输出寄存器的值并恢复的代码，这样就不用使用all led shut up了，非常有用。</p>
+
+          <p>以上并不是最好的办法，如果涉及到led闪烁的时候，在每一次刷新仍然会影响到led，所以将led的当前状态存储进数组，然后在每一次循环的时候刷新其状态就能完美实现，而不是在中断中翻转led。</p>
+
+          <p><strong>无敌！</strong></p>
+
+          <p>2、lcd还有考点就是翻转，无论是向左还是向右，向上还是向下。翻阅参考手册（无论哪一个芯片）</p>
+
+          <p>可以看到SS和GS位，那么我们继续往下面搜索关键字direction，可以找到这两个位的寄存器位置。那么我们通过修改这两个寄存器的值就可以改变lcd的刷新方向。</p>
+
+          <p>在lcd的初始化程序中可以找到初始化的寄存器代码。可以发现另一种反方向的选择已经给出，不用我们自己计算。多尝试就可以知道是哪一个方向了。</p>
+
+          <p>尝试后可以知道R1寄存器是控制上下，R96寄存器是控制左右翻转。</p>
+
+          <p>3、突出显示</p>
+
+          <h2>ADC</h2>
+
+          <p>这一章只介绍正常的ADC采集，对于数字电位器MCP4017待会儿在I2C章节会结合ADC进行介绍。ADC需要注意的就是，如果使用同一adc的多通道进行采集的话一定要使用pollforconversion等待转换结束之后才可以进行value的获取。</p>
+
+          <h2>I2C</h2>
+
+          <p>趁热打铁，I2C主要是E2PROM和MCP4017数字电位器。注意点较多，建议查看上方的注释，都是可能出现的问题。</p>
+
+          <p>1、最常用的E2PROM，国赛大概率会有插入考点</p>
+
+          <p>通过搜索关键词快速在文档中定位，read的话一定要return数据。</p>
+
+          <p>对于设备的地址，在上述红框部分已经凸显出来，不需要死记。根据时序表敲就不会有问题。</p>
+
+          <p>2、MCP4017电位器</p>
+
+          <p>首先查表找到地址，可以看到写就是0x5E，读就是0x5F。</p>
+
+          <p>同样是通过查找功能获取到时序图：</p>
+
+          <p>看上面的时序图也是重点看master后面的即可，很简单，收！</p>
+
+          <h2>RTC实时时钟</h2>
+
+          <p>第十五届由于没有扩展板，所以我猜对于RTC的考察可能会有。</p>
+
+          <p>正常操作分频至1Hz。</p>
+
+          <p>注意此处的选择BCD的数据模式写入，而读取则使用BIN二进制的模式读取。</p>
+
+          <p>否则有可能会导致秒超过了60s还在增长的错误。</p>
+
+          <p>2、设置闹钟，注意需要使用到mask，也就是掩码，正如其名，不考虑这些选项，只考虑秒，否则会导致闹钟不触发！！！很重要，一定要mask掉</p>
+
+          <p>做了一点小改进，可以在运行中设置时钟，将rtc.c中的程序复制过来即可：</p>
+
+          <h2>IC捕获</h2>
+
+          <p>使用单通道与双通道的方式分别实现IC：</p>
+
+          <p>注意下面两个的区别：</p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

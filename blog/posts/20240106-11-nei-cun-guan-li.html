@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="内存管理是最基础的，最根本的，单片机无非不是跟内存、内核打交道，任何程序都离不开内存，但是单片机的内存并不像台式机那样大。……">
+  <title>11、※内存管理 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="11、※内存管理">
+  <meta property="og:description" content="内存管理是最基础的，最根本的，单片机无非不是跟内存、内核打交道，任何程序都离不开内存，但是单片机的内存并不像台式机那样大。……">
+  <meta property="article:published_time" content="2024-01-06T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20240106-11-nei-cun-guan-li.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20240106-11-nei-cun-guan-li.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>11、※内存管理</h1>
+          <p class="post-deck">内存管理是最基础的，最根本的，单片机无非不是跟内存、内核打交道，任何程序都离不开内存，但是单片机的内存并不像台式机那样大。……</p>
+          <div class="post-meta">
+            <time datetime="2024-01-06">2024.01.06</time>
+            <span>RTOS</span>
+            <span>6 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>内存管理是最基础的，最根本的，单片机无非不是跟内存、内核打交道，任何程序都离不开内存，但是单片机的内存并不像台式机那样大。stm32f103zet6的RAM空间为64K，相较于大多数单片机而言已经很充足了，但是如何分配好这些空间也是一门学问。</p>
+
+          <h2>1、RTT内存使用注意事项</h2>
+
+          <p>在之前的章节中，我们留下了一个疑难杂症，参见：[\[手搓RT-Thread\]8、消息队列、信号量及堆栈分析 - www.hawkjgogogo.com](<a href="http://www.hawkjgogogo.com/2023/12/22/%e6%89%8b%e6%90%93rt-thread8%e3%80%81%e6%b6%88%e6%81%af%e9%98%9f%e5%88%97%e3%80%81%e4%bf%a1%e5%8f%b7%e9%87%8f%e5%8f%8a%e5%a0%86%e6%a0%88%e5%88%86%e6%9e%90/)">http://www.hawkjgogogo.com/2023/12/22/%e6%89%8b%e6%90%93rt-thread8%e3%80%81%e6%b6%88%e6%81%af%e9%98%9f%e5%88%97%e3%80%81%e4%bf%a1%e5%8f%b7%e9%87%8f%e5%8f%8a%e5%a0%86%e6%a0%88%e5%88%86%e6%9e%90/)</a>的最后一部分，截图如下。</p>
+
+          <p><img src="../../images/blog/2024/01/image-1024x943.png" alt="" loading="lazy"></p>
+
+          <p>在最后我们对board.c文件中的RT\_HEAP\_SIZE进行了修改：</p>
+
+          <p><img src="../../images/blog/2024/01/image-2-1024x417.png" alt="" loading="lazy"></p>
+
+          <p>_划重点_：我们需要知道这种开辟一个很大的堆空间进行管理，是通过数组来分配的，由于数组的元素类型为uint32\_t，所以每增加一个元素会开辟4个字节空间，但是我们平时只会考虑占用了多少个单字节空间——<strong>在设置RT\_HEAP\_SIZE时需要将我们像设置的空间大小除以4</strong>。</p>
+
+          <h2>2、单片机中的内存结构</h2>
+
+          <p><img src="../../images/blog/2024/01/image-56-798x1024.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/01/image-57.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/01/image-58-1024x342.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/01/image-59.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/01/image-60.png" alt="" loading="lazy"></p>
+
+          <h2>3、静态内存分配</h2>
+
+          <p>静态内存一旦创建就指定了内存块的大小，只能根据内存块的大小粒度进行分配。适合于确定需要占多少内存的情况，分配的效率更高，但是利用效率更低。</p>
+
+          <p>在RTT中使用静态内存管理时主要利用了内存池（Memory Pool）的概念，也就是在创建时申请了一大块内存，然后分成大小相等的多个小内存块，小内存块通过链表相连接。</p>
+
+          <p>每次需要分配内存时便从空闲内存链表中取出表头上的第一个内存块，提供给申请者。</p>
+
+          <p><img src="../../images/blog/2024/01/image-3.png" alt="" loading="lazy"></p>
+
+          <p>物理内存中允许存在多个大小不同的内存池，并且内存池一旦初始化完成就不能够继续调整。内核负责分配内存池对象控制块，并接收用户线程的分配内存块申请。</p>
+
+          <h2>静态内存控制块</h2>
+
+          <p>与其他对象一样，静态内存（内存池）也需要一个静态内存控制块来管理，结构如下：</p>
+
+          <p><img src="../../images/blog/2024/01/image-5-1024x452.png" alt="" loading="lazy"></p>
+
+          <p>首先我们需要像分地皮一样划分一片区域给内存池，接着才能像分房子一样将内存池内的内存块挨个分给内存块。</p>
+
+          <p><img src="../../images/blog/2024/01/image-4.png" alt="" loading="lazy"></p>
+
+          <p>首先我们需要创建一个内存池：</p>
+
+          <p><img src="../../images/blog/2024/01/image-10.png" alt="" loading="lazy"></p>
+
+          <p>接着我们需要给这个内存池分配对象并设置结构体参数，注意分配内存的过程，向上对齐，加上指向内存池控制块的指针大小，最后再乘上数量：</p>
+
+          <p><img src="../../images/blog/2024/01/image-11-1024x135.png" alt="" loading="lazy"></p>
+
+          <p>然后便是通过rt\_malloc()函数进行内存开辟，但是在这之前我们还需要知道最开始初始化的时候堆空间的开辟。</p>
+
+          <h2>堆空间初始化rt\_system\_heap\_init(void \*begin\_addr, void \*end\_addr)</h2>
+
+          <p>根据数组分配地址并对齐：</p>
+
+          <p><img src="../../images/blog/2024/01/image-13-1024x850.png" alt="" loading="lazy"></p>
+
+          <p>初始化两个堆控制块，一个在开头一个在结尾。<br>注意控制块的prev和next，存储的应该是偏置的值。</p>
+
+          <p><img src="../../images/blog/2024/01/image-12-1024x411.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/01/image-14-1024x288.png" alt="" loading="lazy"></p>
+
+          <p><strong>可以看到，由于Heap\_ptr是指向8位变量的，所以可以看作也是一个大型数组（一个超大的旅馆），里面有4084个小房子，每个小房子里面就是一个字节！</strong></p>
+
+          <p><img src="../../images/blog/2024/01/image-17-1024x713.png" alt="" loading="lazy"></p>
+
+          <p>最后，将空闲内存块指针等于初始位置的内存控制块：</p>
+
+          <p><img src="../../images/blog/2024/01/image-15-1024x210.png" alt="" loading="lazy"></p>
+
+          <p>在本章节我们需要留意的是lfree、heap\_ptr、heap\_end，在接下来的rt\_malloc()中会使用到。</p>
+
+          <h2>回到rt\_malloc()</h2>
+
+          <p>我们已经初始化的堆内存空间是这样子的：</p>
+
+          <p><img src="../../images/blog/2024/01/image-18-1024x245.png" alt="" loading="lazy"></p>
+
+          <p>我们需要像插入链表节点一样，在freeMEM中开辟新的内存空间：</p>
+
+          <p><img src="../../images/blog/2024/01/image-19-1024x393.png" alt="" loading="lazy"></p>
+
+          <p>当然在遍历的过程中，我们需要判断该内存块是否已被使用，以及它的大小至少需要满足能够包含MIN\_SIZE\_ALIGNED 和 struct heap\_mem内存控制块。</p>
+
+          <p>如果满足条件的话我们就开辟内存空间，设置下一个内存控制块：</p>
+
+          <p><img src="../../images/blog/2024/01/image-20.png" alt="" loading="lazy"></p>
+
+          <p>接着如果此时的当前内存控制块==最低空闲块儿，则我们需要把最低的空闲块儿指针根据链表连接的节点往后移动，一般来说如果逐个开辟的话就是会往后移动一个到新开辟的代码块儿。</p>
+
+          <p><img src="../../images/blog/2024/01/image-23.png" alt="" loading="lazy"></p>
+
+          <p>最后将以上地址返回，示意图：</p>
+
+          <p><img src="../../images/blog/2024/01/image-24.png" alt="" loading="lazy"></p>
+
+          <p>上图中的malloc就是开辟的空间!</p>
+
+          <h2>静态内存分配</h2>
+
+          <p>静态内存分配也使用到了rt\_malloc()函数，其主要是就将程序启动时初始化的堆空间再分配。先确认需要分配空间的大小，如果设置每个内存块大小为3，先向上对齐到4，再给每个内存块分配一个内存池控制块指针，总计8Byte，最后乘上内存块的数量20，这样就开辟了160Byte的空间（私以为如果内存块的空间较小，性价比不高，因为每个内存块都要加上4Byte的指针）。</p>
+
+          <p><img src="../../images/blog/2024/01/image-25-1024x397.png" alt="" loading="lazy"></p>
+
+          <p>重点在后面的内存块的逐个开辟，使用keil自带的memory窗口可以清晰地看出内存的变化：</p>
+
+          <p><img src="../../images/blog/2024/01/image-26-1024x718.png" alt="" loading="lazy"></p>
+
+          <p>第一次循环：</p>
+
+          <p><img src="../../images/blog/2024/01/image-27.png" alt="" loading="lazy"></p>
+
+          <p>循环结束：</p>
+
+          <p><img src="../../images/blog/2024/01/image-28.png" alt="" loading="lazy"></p>
+
+          <p>这样就开辟了20个内存块，每个内存块分配了3Byte的空间，但是由于字节对齐和链表节点的存在，每个内存块占8Byte的空间，总计160Byte。</p>
+
+          <p>注意该函数中的\*(rt\_uint8\_t \*\*)使用到了二级指针，但本质上可以化简为<br>rt\_uint8\_t \*，即指向一个字节的指针。</p>
+
+          <p>也可以理解为(block\_ptr + offset \* (block\_size + sizeof(rt\_uint8\_t \*)))是一个保存了一个指针的地址，而再加上一个\*便解引用了，得到了这个指针，跟我们上面所讲到的相符合。</p>
+
+          <p><img src="../../images/blog/2024/01/image-30.png" alt="" loading="lazy"></p>
+
+          <p>最后返回memorypool指针</p>
+
+          <p><img src="../../images/blog/2024/01/image-31.png" alt="" loading="lazy"></p>
+
+          <h2>静态内存开辟函数 rt\_mp\_alloc()</h2>
+
+          <p>在函数中最重要的是以下部分：</p>
+
+          <p><img src="../../images/blog/2024/01/image-35-1024x457.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/01/image-36-1024x655.png" alt="" loading="lazy"></p>
+
+          <p>将当前的内存链表节点设置为下一个空闲内存块：</p>
+
+          <p><img src="../../images/blog/2024/01/image-37-1024x382.png" alt="" loading="lazy"></p>
+
+          <p>改变当前块的内容，将其标记为已分配，并将其链接到相应的内存池：</p>
+
+          <p><img src="../../images/blog/2024/01/image-38-1024x484.png" alt="" loading="lazy"></p>
+
+          <p>下面我们做一个尝试，在第一次alloc之后再次alloc，我们会发现这行代码的作用</p>
+
+          <p><code>/* 改变当前块的内容，将其标记为已分配，并将其链接到相应的内存池 */<br>*(rt_uint8_t **)block_ptr = (rt_uint8_t *)mp;</code></p>
+
+          <p>即标记该块内存已经被使用！</p>
+
+          <p><img src="../../images/blog/2024/01/image-39-1024x411.png" alt="" loading="lazy"></p>
+
+          <p>分配了一个内存块但是还没有写入数据。</p>
+
+          <p><img src="../../images/blog/2024/01/image-33-1024x579.png" alt="" loading="lazy"></p>
+
+          <p>写入数据一个4字节的数据DEADBEAF。</p>
+
+          <p><img src="../../images/blog/2024/01/image-34-1024x547.png" alt="" loading="lazy"></p>
+
+          <p>写入两个数据：</p>
+
+          <p><img src="../../images/blog/2024/01/image-40-1024x700.png" alt="" loading="lazy"></p>
+
+          <h2>静态内存释放函数 RT\_MP\_FREE()</h2>
+
+          <p>既然有开辟，必然紧跟着释放函数。<br>释放函数传入的是需要释放的内存块的地址，然后通过指针的偏移获取当前内存池控制块的指针。</p>
+
+          <p><img src="../../images/blog/2024/01/image-41-1024x127.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/01/image-42-1024x382.png" alt="" loading="lazy"></p>
+
+          <p>将本来的空闲内存块变成当前的free掉的内存块的下一个空闲，可以理解为新空出来的内存在下一次需要分配的时候优先被分配，然后如果还需要分配就会通过这个链表连接到下一个需要分配的空闲链表，无论如何都是连起来的，当前的可分配的空闲链表保存在mp-&gt;block\_list里面。</p>
+
+          <p>这也就和上面的alloc相呼应了，如果我们一直alloc不free，那么这个酒店房间就是连续地开辟的比如101、102、103、104、105、106，下一间等待被开辟的是107，但此时103（block\_ptr）退房了，变成空闲，那么103客人通过指针偏移找到酒店前台（mp），酒店前台（mp）将103房设置为当前空闲（mp-&gt;block\_list），即如果有客人来优先分配103房，并将107房设置为103房分配过后的下一间房间！</p>
+
+          <p>注意：虽然103房被设置为空闲了，但是本酒店没有打扫阿姨，DEADBEADF依然存储在原来的数据位置！（然并卵，不知道有啥影响）</p>
+
+          <p><img src="../../images/blog/2024/01/image-43-1024x602.png" alt="" loading="lazy"></p>
+
+          <p>静态分配的内容到此结束。</p>
+
+          <h2>动态内存分配</h2>
+
+          <p>动态内存分配时的流程是：</p>
+
+          <ul>
+          <li>初始化内存堆空间:rt\_system\_heap\_init()</li>
+          <li>申请任意大小的动态内存：rt\_malloc()</li>
+          <li>释放动态内存rt\_free()</li>
+          </ul>
+
+          <p><strong>注意：静态内存和动态内存是可以同时使用的，他们都是在内存堆空间中通过rt\_malloc()函数开辟的，只不过静态内存是在这么大的堆空间中承包了一个酒店，然后把分配房间的任务交给了酒店前台，而动态内存就是一个个旅行团，他们一来就是承包整个酒店，一走就收拾干净，不留一点痕迹。</strong></p>
+
+          <p>所以说，动态内存分配和静态内存分配在本质上并无差别。</p>
+
+          <p>参考小标题rt\_malloc()。</p>
+
+          <h2>rt\_FREE()</h2>
+
+          <p>首先我们开辟了100\*4Byte的空间给数组p\_dyn</p>
+
+          <p><img src="../../images/blog/2024/01/image-44-1024x935.png" alt="" loading="lazy"></p>
+
+          <p>接着向该空间内写入数据：</p>
+
+          <p><img src="../../images/blog/2024/01/image-45-1024x782.png" alt="" loading="lazy"></p>
+
+          <p>末尾是89C，初始是70C，转化为十进制正好是400Byte，完美！</p>
+
+          <p>接着我们直接进入free函数：</p>
+
+          <p><img src="../../images/blog/2024/01/image-46.png" alt="" loading="lazy"></p>
+
+          <p>同样的，进行时间回溯，指针偏移到前面的内存控制块：</p>
+
+          <p><img src="../../images/blog/2024/01/image-48-1024x529.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/01/image-49-1024x146.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/01/image-50.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/01/image-51.png" alt="" loading="lazy"></p>
+
+          <p>在这些操作时并不会对内存里的内容进行清空，只会改变它的使用情况，因为之后如果再次被使用数据就会覆盖。</p>
+
+          <p>接下来，为了更加高效的进行内存使用，使用plug\_hole()函数拼接支离破碎的内存。</p>
+
+          <h2>内存拼接函数plug\_hole()</h2>
+
+          <p>"Plug hole" 的中文翻译可以是 "填补空洞" 或 "堵塞孔隙"。</p>
+
+          <p><img src="../../images/blog/2024/01/image-52-1024x266.png" alt="" loading="lazy"></p>
+
+          <p>可以看到这俩内存块是连在一起的，但是还没有被拼接上：</p>
+
+          <p><img src="../../images/blog/2024/01/image-53-1024x221.png" alt="" loading="lazy"></p>
+
+          <p><img src="../../images/blog/2024/01/image-54-1024x474.png" alt="" loading="lazy"></p>
+
+          <p>这样，下一个内存块就完成了他的任务，将它的遗产继承给了当前内存块，他俩就合并了。</p>
+
+          <p>向前合并也是同样的道理。当然上一块内存块已被使用，所以就无法合拼咯！</p>
+
+          <p><img src="../../images/blog/2024/01/image-55-1024x459.png" alt="" loading="lazy"></p>
+
+          <h2>4、完结</h2>
+
+          <p>以前觉得内存是一个深不可测的玩意儿，蹲在电脑前这些天终于整明白了，<br>完结撒花！</p>
+
+          <p>又向嵌入式的深处迈进了一步！</p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

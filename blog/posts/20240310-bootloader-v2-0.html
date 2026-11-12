@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="在1.0版本实现了APP跳转的基础上，2.0版本能够支持使用SD卡进行更新，仅需要将需要更新的App.bin文件放置在SD卡的0:Update目录下，在开发板上电后按下KEY0则可进行App更新，倘若……">
+  <title>Bootloader_v2.0 — Hawk's Notes</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Bootloader_v2.0">
+  <meta property="og:description" content="在1.0版本实现了APP跳转的基础上，2.0版本能够支持使用SD卡进行更新，仅需要将需要更新的App.bin文件放置在SD卡的0:Update目录下，在开发板上电后按下KEY0则可进行App更新，倘若……">
+  <meta property="article:published_time" content="2024-03-10T00:00:00+08:00">
+  <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
+       本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
+  <link rel="canonical" href="https://hawkoding.github.io/blog/posts/20240310-bootloader-v2-0.html">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/posts/20240310-bootloader-v2-0.html">
+  <meta property="og:image" content="https://hawkoding.github.io/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hawkoding.github.io/images/og-cover.png">
+  -->
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell post-shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html" aria-current="page">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="post-header">
+          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <h1>Bootloader_v2.0</h1>
+          <p class="post-deck">在1.0版本实现了APP跳转的基础上，2.0版本能够支持使用SD卡进行更新，仅需要将需要更新的App.bin文件放置在SD卡的0:Update目录下，在开发板上电后按下KEY0则可进行App更新，倘若……</p>
+          <div class="post-meta">
+            <time datetime="2024-03-10">2024.03.10</time>
+            <span>单片机</span>
+            <span>1 min read</span>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <p>在1.0版本实现了APP跳转的基础上，2.0版本能够支持使用SD卡进行更新，仅需要将需要更新的App.bin文件放置在SD卡的0:Update目录下，在开发板上电后按下KEY0则可进行App更新，倘若不按下KEY0，则会跳转到上一次断电前运行版本。</p>
+
+          <h2>注意</h2>
+
+          <p>首先我们必须对Fatfs系统进行瘦身，往往我们会使用cc936.c这个文件来使用中文字库，但是该文件占用空间Flash空间极大，在不考虑将其放入外部flash的情况时，使用Fatfs原始编码是有利于节约空间的，否则Bootloader过大总让人感觉有些汗流浃背。</p>
+
+          <p>在.map文件中我们可以查看到flash中二进制文件（.o）的大小。</p>
+
+          <p>在移除这个cc936.c文件后，我们还需要修改ffconf.h中的选择。<br>一共两步，不使用长文件名与exfat</p>
+
+          <p>接着继续给文件瘦身，REMOVE掉不必要的文件，只留下必要的驱动以及HAL库文件。</p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk · 本文阅读 <span id="busuanzi_value_page_pv">--</span> 次</span>
+      <a href="../index.html">继续阅读 →</a>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

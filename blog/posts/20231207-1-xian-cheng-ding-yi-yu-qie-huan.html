@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Github链接：https://github.com/JiegeLinux/RT-Thread_Handmade&quot;&gt;JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thre……">
+  <meta name="description" content="Github链接：JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)">
   <title>1、线程定义与切换 — Hawk's Notes</title>
   <meta property="og:type" content="article">
   <meta property="og:title" content="1、线程定义与切换">
-  <meta property="og:description" content="Github链接：https://github.com/JiegeLinux/RT-Thread_Handmade&quot;&gt;JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thre……">
+  <meta property="og:description" content="Github链接：JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)">
   <meta property="article:published_time" content="2023-12-07T00:00:00+08:00">
   <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
        本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
@@ -34,18 +34,18 @@
     <main>
       <article>
         <header class="post-header">
-          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <a class="back-link" href="../tech/">← 返回技术</a>
           <h1>1、线程定义与切换</h1>
-          <p class="post-deck">Github链接：https://github.com/JiegeLinux/RT-Thread_Handmade"&gt;JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thre……</p>
+          <p class="post-deck">Github链接：JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</p>
           <div class="post-meta">
             <time datetime="2023-12-07">2023.12.07</time>
-            <span>RTOS</span>
+            <span>MCU</span>
             <span>4 min read</span>
           </div>
         </header>
 
         <div class="post-body">
-          <p>Github链接：<a href="<a href="https://github.com/JiegeLinux/RT-Thread_Handmade">https://github.com/JiegeLinux/RT-Thread_Handmade</a>">JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</a></p>
+          <p>Github链接：<a href="https://github.com/JiegeLinux/RT-Thread_Handmade">JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</a></p>
 
           <p>这是手搓RT-Thread系列的第一章——线程的定义与切换。为什么选择RT-Thread呢，主要还是因为它的结构个人认为相较于FreeRTOS更加清晰，野火的资料也很清晰。实践出真知，学代码，看是没有用的，即使是定义，也要一点一点地敲出来！</p>
 
@@ -63,7 +63,7 @@
 
           <p>此时调度器的作用就体现出来了，我们先定义最大32个任务的链表数组，这个数组就是所有的任务的优先级进行排序的，比如rt\_thread\_priority\_table\[0\]代表最高优先级，rt\_thread\_priority\_table\[31\]代表最低优先级，而这些table的本质是链表：</p>
 
-          <p><img src="<a href="https://doc.embedfire.com/rtos/rtthread/zh/latest/_images/switch004.png">https://doc.embedfire.com/rtos/rtthread/zh/latest/_images/switch004.png</a>" alt="线程轮流切换波形图2" loading="lazy"></p>
+          <p><img src="https://doc.embedfire.com/rtos/rtthread/zh/latest/_images/switch004.png" alt="线程轮流切换波形图2" loading="lazy"></p>
 
           <p>链表可以理解为有前后两个指针的节点所组成的链，向前指向上一个节点，向后指向下一个节点，就在相互指向的过程中，就组成了一条链，一环扣一环。通过这32个链表，就能将众多任务按照一定的顺序捆绑在一起，我们只需要知道前面一个任务和下一个任务的在链表中节点的位置在哪里，就可以通过这个节点获取到这个任务在堆栈中的指针的位置，从而将这个任务加载到cpu中运行，以此循环，不断切换。</p>
 

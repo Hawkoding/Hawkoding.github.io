@@ -8,8 +8,10 @@
     python tools/md2blog.py --single <片段>     # 只转换路径含该片段的一篇 md
 
 规则：
-- 每个 database 子文件夹 = 一个分类栏目；blog/index.html 与 blog/feed.xml
-  只重写注释标记（POSTS / TOPICS / ITEMS）之间的区域，区域外的手动修改一律保留。
+- 栏目两级结构：database/<大类>/（<小类>/）*.md。大类 = 技术/随想/投资，
+  小类 = 技术下的 MCU/Linux/编程 等。
+- blog/index.html = 总览页，只重写 HUB 注释标记之间（每个大类精选 N 篇 +
+  「全部 N 篇」链接）；blog/<大类slug>/index.html = 栏目子页，整体生成。
 - 文章页文件名 = 「日期-拼音slug.html」（pypinyin 不可用时退化为 ASCII）。
 - 重复运行结果一致（幂等）；唯一例外是 feed.xml 的 lastBuildDate（RSS 规范要求构建时间）。
 - 源 md 的标题取自文件名（正文首行与标题相同时自动剔除）。
@@ -37,6 +39,18 @@ YEAR = 2026
 SITE_URL = "https://hawkoding.github.io"
 RSS_TITLE = f"{BLOG_NAME_EN} RSS"
 
+# ── 栏目结构：database/<大类>/（<小类>/）*.md 两级
+#    blog/index.html = 总览页（每个大类 3 篇精选 + 全部链接）
+#    blog/<slug>/index.html = 大类子页（小类分节或平铺列表）
+GROUP_ORDER = ["技术", "随想", "投资"]
+GROUP_SLUGS = {"技术": "tech", "随想": "thoughts", "投资": "invest"}
+GROUP_DESCRIPTIONS = {
+    "技术": "内核驱动与嵌入式的工程笔记：MCU 实战、RTOS 原理、Linux 驱动与示波器项目。",
+    "随想": "读书、哲学与生活里的思考：写给未来的自己。",
+    "投资": "交易复盘与周期思考：写给自己的投资笔记。",
+}
+FEATURED_PER_GROUP = 3        # 总览页每个大类的精选篇数
+
 MAX_SLUG_LEN = 40            # 拼音 slug 长度上限（在连字符边界截断）
 PSEUDO_HEADING_MAX_LEN = 15  # "1. xxx" 内容不超过该字数时视为章节标题而非列表
 POSTS_PER_MIN = 400          # 阅读速度：汉字/分钟
@@ -51,9 +65,10 @@ MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DATABASE_DIR = REPO_ROOT / "database"
-POSTS_DIR = REPO_ROOT / "blog" / "posts"
-INDEX_PATH = REPO_ROOT / "blog" / "index.html"
-FEED_PATH = REPO_ROOT / "blog" / "feed.xml"
+BLOG_DIR = REPO_ROOT / "blog"
+POSTS_DIR = BLOG_DIR / "posts"
+INDEX_PATH = BLOG_DIR / "index.html"
+FEED_PATH = BLOG_DIR / "feed.xml"
 
 HARD_BREAK = "\x00"  # 行尾双空格硬换行的内部哨兵，最后统一替换为 <br>
 
@@ -73,7 +88,8 @@ RE_OL = re.compile(r"^(\s*)(\d+)[.．]\s+(.+)$")
 
 RE_CODE = re.compile(r"`([^`]+)`")
 RE_BOLD = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
-RE_URL = re.compile(r"https?://[A-Za-z0-9\-._~:/?#\[\]@!$&'()*+,;=%]+")
+# 裸 URL 自动成链；(?<!["=>]) 排除已生成的 href/src 属性里的 URL（避免双重包裹）
+RE_URL = re.compile(r'(?<!["=>])https?://[A-Za-z0-9\-._~:/?#\[\]@!$&\'()*+,;=%]+')
 URL_TRAILING_PUNCT = "。，、；：！？）】」〉》\"'…"
 RE_IMG = re.compile(r"!\[([^\]]*?)\]\(([^)\s]+)\)")       # ![](图) → <img>（惰性，防连续多图跨匹配）
 RE_LINK = re.compile(r"\[([^\]]+?)\]\(([^)\s]+)\)")       # [文字](链接) → <a>（含站内相对路径）
@@ -385,7 +401,8 @@ def reading_minutes(blocks):
 @dataclass
 class Post:
     src: Path
-    category: str
+    group: str        # 大类（技术/随想/投资）
+    subcat: str       # 小类（如 MCU/Linux），无小类为 ""
     date: datetime
     title: str
     slug: str
@@ -394,8 +411,13 @@ class Post:
     minutes: int
     body_html: str
 
+    @property
+    def category_label(self):
+        """文章页/卡片上显示的栏目名：有小类显示小类，否则显示大类。"""
+        return self.subcat or self.group
 
-def convert(src, category):
+
+def convert(src, group, subcat):
     text = src.read_text(encoding="utf-8-sig")
     date_str, title = parse_filename(src.name)
     if not date_str:
@@ -411,7 +433,7 @@ def convert(src, category):
     minutes = reading_minutes(blocks)
     body = "\n\n".join(html for _, html in blocks)
     body = "\n".join((" " * 10 + line) if line else "" for line in body.split("\n"))
-    return Post(src=src, category=category, date=d, title=title,
+    return Post(src=src, group=group, subcat=subcat, date=d, title=title,
                 slug=slugify(title), filename="", deck=deck,
                 minutes=minutes, body_html=body)
 
@@ -473,7 +495,7 @@ POST_TEMPLATE = """<!DOCTYPE html>
     <main>
       <article>
         <header class="post-header">
-          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <a class="back-link" href="../%%GROUP_SLUG%%/">← 返回%%GROUP%%</a>
           <h1>%%TITLE%%</h1>
           <p class="post-deck">%%DECK_HTML%%</p>
           <div class="post-meta">
@@ -500,16 +522,26 @@ POST_TEMPLATE = """<!DOCTYPE html>
 </html>
 """
 
-SECTION_TEMPLATE = """        <section aria-labelledby="{heading_id}">
+SECTION_TEMPLATE = """          <section aria-labelledby="{heading_id}">
+            <div class="section-heading">
+              <h2 id="{heading_id}">{title}</h2>
+              <span class="section-label">No. {count:03d}</span>
+            </div>
+
+{cards}          </section>"""
+
+HUB_SECTION_TEMPLATE = """        <section class="hub-group" aria-labelledby="{heading_id}">
           <div class="section-heading">
-            <h2 id="{heading_id}">{category}</h2>
+            <h2 id="{heading_id}">{group}</h2>
             <span class="section-label">No. {count:03d}</span>
           </div>
 
-{cards}        </section>"""
+{cards}
+          <a class="view-all" href="{view_all_link}">全部 {count} 篇 →</a>
+        </section>"""
 
 CARD_TEMPLATE = """          <article class="article-card">
-            <a href="posts/{filename}">
+            <a href="{link_prefix}posts/{filename}">
               <div class="meta">
                 <time datetime="{date_attr}">{date_display}</time>
                 <span>{category}</span>
@@ -520,6 +552,55 @@ CARD_TEMPLATE = """          <article class="article-card">
             </a>
           </article>"""
 
+CATEGORY_TEMPLATE = """<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{description}">
+  <title>{group} — {blog_name}</title>
+  <link rel="canonical" href="{site_url}/blog/{slug}/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{group} — {blog_name}">
+  <meta property="og:description" content="{description}">
+  <meta property="og:url" content="{site_url}/blog/{slug}/">
+  <link rel="alternate" type="application/rss+xml" title="{rss_title}" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>{blog_name}</strong><span>{blog_cn}</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <header class="cat-header">
+        <a class="back-link" href="../index.html">← 返回全部栏目</a>
+        <h1>{group}</h1>
+        <p class="cat-desc">{description}</p>
+      </header>
+
+      <div class="cat-body">
+{body}      </div>
+    </main>
+
+    <footer class="site-footer">
+      <span>© {year} {author}</span>
+      <span class="counter">总访问 <span id="busuanzi_value_site_pv">--</span> 次 · 访客 <span id="busuanzi_value_site_uv">--</span> 人</span>
+      <span>{blog_cn} / {blog_name}</span>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>
+"""
+
 ITEM_TEMPLATE = """    <item>
       <title>{title}</title>
       <link>{url}</link>
@@ -527,6 +608,23 @@ ITEM_TEMPLATE = """    <item>
       <pubDate>{pubdate}</pubDate>
       <description>{deck}</description>
     </item>"""
+
+
+def build_cards(posts, link_prefix=""):
+    """文章卡片列表。link_prefix：总览页 ""，分类子页 "../"。"""
+    return "\n\n".join(
+        CARD_TEMPLATE.format(
+            link_prefix=link_prefix,
+            filename=p.filename,
+            date_attr=p.date.strftime("%Y-%m-%d"),
+            date_display=p.date.strftime("%Y.%m.%d"),
+            category=escape_html(p.category_label),
+            minutes=p.minutes,
+            title=escape_html(p.title),
+            deck=escape_html(p.deck),
+        )
+        for p in posts
+    )
 
 
 def build_post_html(p):
@@ -543,7 +641,9 @@ def build_post_html(p):
         "%%CANONICAL_URL%%": f"{SITE_URL}/blog/posts/{p.filename}",
         "%%DATE_ATTR%%": date_attr,
         "%%DATE_DISPLAY%%": date_display,
-        "%%CATEGORY%%": escape_html(p.category),
+        "%%CATEGORY%%": escape_html(p.category_label),
+        "%%GROUP%%": escape_html(p.group),
+        "%%GROUP_SLUG%%": GROUP_SLUGS.get(p.group, slugify(p.group)),
         "%%READING_MIN%%": str(p.minutes),
         "%%YEAR%%": str(YEAR),
         "%%AUTHOR_CN%%": AUTHOR_CN,
@@ -560,39 +660,61 @@ def sort_posts(posts):
     return sorted(posts, key=lambda p: (-p.date.toordinal(), p.title))
 
 
-def build_index_regions(posts):
-    """返回 (POSTS 区域新内容, TOPICS 区域新内容)。"""
-    by_cat = {}
+def build_hub_region(posts):
+    """总览页区域：每个大类一节（精选 N 篇 + 全部链接）。"""
+    by_group = {}
     for p in posts:
-        by_cat.setdefault(p.category, []).append(p)
-    cats = sorted(by_cat, key=lambda c: -max(p.date for p in by_cat[c]).toordinal())
-
-    sections, topics = [], []
-    for cat in cats:
-        cat_posts = sort_posts(by_cat[cat])
-        cards = "\n\n".join(
-            CARD_TEMPLATE.format(
-                filename=p.filename,
-                date_attr=p.date.strftime("%Y-%m-%d"),
-                date_display=p.date.strftime("%Y.%m.%d"),
-                category=escape_html(p.category),
-                minutes=p.minutes,
-                title=escape_html(p.title),
-                deck=escape_html(p.deck),
-            )
-            for p in cat_posts
-        )
-        sections.append(SECTION_TEMPLATE.format(
-            heading_id=f"cat-{slugify(cat)}",
-            category=escape_html(cat),
-            count=len(cat_posts),
-            cards=cards,
+        by_group.setdefault(p.group, []).append(p)
+    blocks = []
+    for g in GROUP_ORDER:
+        if g not in by_group:
+            continue
+        gp = sort_posts(by_group[g])
+        blocks.append(HUB_SECTION_TEMPLATE.format(
+            heading_id=f"cat-{slugify(g)}",
+            group=escape_html(g),
+            count=len(gp),
+            cards=build_cards(gp[:FEATURED_PER_GROUP]),
+            view_all_link=f"{GROUP_SLUGS.get(g, slugify(g))}/",
         ))
-        topics.append(f"              <li>{escape_html(cat)}（{len(cat_posts)} 篇）</li>")
+    return "\n\n".join(blocks)
 
-    posts_region = "\n" + "\n\n".join(sections) + "\n        "
-    topics_region = "\n" + "\n".join(topics) + "\n              "
-    return posts_region, topics_region
+
+def build_category_pages(posts):
+    """为每个大类生成 blog/<slug>/index.html。返回 [(slug, group, html)]。"""
+    by_group = {}
+    for p in posts:
+        by_group.setdefault(p.group, []).append(p)
+    pages = []
+    for g in GROUP_ORDER:
+        if g not in by_group:
+            continue
+        gp = sort_posts(by_group[g])
+        slug = GROUP_SLUGS.get(g, slugify(g))
+        subs = {}
+        for p in gp:
+            subs.setdefault(p.subcat, []).append(p)
+        if len(subs) == 1 and "" in subs:
+            body = SECTION_TEMPLATE.format(
+                heading_id="all", title="全部文章", count=len(gp),
+                cards=build_cards(gp, link_prefix="../"))
+        else:
+            parts = []
+            for name in sorted(subs, key=lambda k: (-len(subs[k]), k)):
+                parts.append(SECTION_TEMPLATE.format(
+                    heading_id=f"sub-{slugify(name) or 'main'}",
+                    title=escape_html(name) if name else "其他",
+                    count=len(subs[name]),
+                    cards=build_cards(subs[name], link_prefix="../")))
+            body = "\n\n".join(parts)
+        html = CATEGORY_TEMPLATE.format(
+            group=escape_html(g),
+            description=escape_html(GROUP_DESCRIPTIONS.get(g, "")),
+            slug=slug, blog_name=BLOG_NAME_EN, blog_cn=BLOG_NAME_CN,
+            rss_title=RSS_TITLE, site_url=SITE_URL, year=YEAR, author=AUTHOR_CN,
+            body=body)
+        pages.append((slug, g, html))
+    return pages
 
 
 def build_feed_region(posts):
@@ -612,18 +734,25 @@ def build_feed_region(posts):
 # ---------------------------------------------------------------- 主流程
 
 def collect_md_files():
+    """两级扫描：database/<大类>/*.md 与 database/<大类>/<小类>/*.md。
+    返回 [(src, group, subcat)]。"""
     result = []
     if not DATABASE_DIR.is_dir():
         sys.exit(f"错误：找不到 database 目录：{DATABASE_DIR}")
-    for sub in sorted(DATABASE_DIR.iterdir()):
-        if not sub.is_dir():
+    for gdir in sorted(DATABASE_DIR.iterdir()):
+        if not gdir.is_dir():
             continue
-        files = sorted(sub.glob("*.md"))
-        if not files:
-            print(f"注意：空目录 {sub.name}/（无 md 文件，不生成栏目）")
-            continue
-        for f in files:
-            result.append((f, sub.name))
+        for f in sorted(gdir.glob("*.md")):
+            result.append((f, gdir.name, ""))
+        for sub in sorted(gdir.iterdir()):
+            if not sub.is_dir():
+                continue
+            files = sorted(sub.glob("*.md"))
+            if not files:
+                print(f"注意：空目录 {gdir.name}/{sub.name}/（无 md 文件，不生成栏目）")
+                continue
+            for f in files:
+                result.append((f, gdir.name, sub.name))
     return result
 
 
@@ -635,7 +764,7 @@ def existing_generated_filenames():
 
 def main():
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    ap = argparse.ArgumentParser(description="database 下 markdown → blog 文章页")
+    ap = argparse.ArgumentParser(description="database 下 markdown → blog 文章页 + 栏目页")
     ap.add_argument("--dry-run", action="store_true",
                     help="只打印将执行的操作，不写任何文件")
     ap.add_argument("--single", metavar="片段",
@@ -648,24 +777,27 @@ def main():
         if not md_files:
             sys.exit(f"没有找到路径含 {args.single!r} 的 md 文件")
 
-    posts = [convert(src, category) for src, category in md_files]
+    posts = [convert(src, group, subcat) for src, group, subcat in md_files]
     assign_filenames(posts)
 
     if not posts:
         print("没有可转换的文章。")
         return
 
-    posts_region, topics_region = build_index_regions(posts)
+    hub_region = build_hub_region(posts)
+    cat_pages = build_category_pages(posts)
     items_region, build_date = build_feed_region(posts)
 
     if args.dry_run:
         print(f"\n[dry-run] 共 {len(posts)} 篇文章：")
         for p in sort_posts(posts):
-            print(f"  {p.date.strftime('%Y-%m-%d')}  [{p.category}]  "
+            print(f"  {p.date.strftime('%Y-%m-%d')}  [{p.group}/{p.subcat or '-'}]  "
                   f"{p.filename}  ←  {p.src.relative_to(REPO_ROOT)}")
-        cats = sorted({p.category for p in posts})
-        print(f"[dry-run] blog/index.html 将生成 {len(cats)} 个栏目"
-              f"（{', '.join(cats)}），侧栏「关注主题」同步 {len(cats)} 条")
+        groups = sorted({p.group for p in posts})
+        print(f"[dry-run] blog/index.html 将生成 {len(groups)} 个栏目区块"
+              f"（{', '.join(groups)}，各精选 {FEATURED_PER_GROUP} 篇）")
+        print(f"[dry-run] 栏目子页 {len(cat_pages)} 个："
+              + ", ".join(f"blog/{s}/ ({g})" for s, g, _ in cat_pages))
         print(f"[dry-run] blog/feed.xml 将写入 {len(posts)} 个 item")
         print("[dry-run] 未写任何文件。")
         return
@@ -674,13 +806,14 @@ def main():
     for p in posts:
         atomic_write(POSTS_DIR / p.filename, build_post_html(p))
 
+    for slug, group, html in cat_pages:
+        atomic_write(BLOG_DIR / slug / "index.html", html)
+
     index_text = INDEX_PATH.read_bytes().decode("utf-8")
     index_crlf = "\r\n" in index_text
     index_text = index_text.replace("\r\n", "\n")
-    index_text = replace_region(index_text, "<!-- POSTS:BEGIN -->",
-                                "<!-- POSTS:END -->", posts_region)
-    index_text = replace_region(index_text, "<!-- TOPICS:BEGIN -->",
-                                "<!-- TOPICS:END -->", topics_region)
+    index_text = replace_region(index_text, "<!-- HUB:BEGIN -->",
+                                "<!-- HUB:END -->", "\n" + hub_region + "\n        ")
     atomic_write(INDEX_PATH, index_text.replace("\n", "\r\n") if index_crlf else index_text)
 
     feed_text = FEED_PATH.read_bytes().decode("utf-8")
@@ -694,8 +827,9 @@ def main():
     atomic_write(FEED_PATH, feed_text.replace("\n", "\r\n") if feed_crlf else feed_text)
 
     print(f"完成：生成 {len(posts)} 篇文章页（blog/posts/）")
-    cats = sorted({p.category for p in posts})
-    print(f"完成：重写 blog/index.html（{len(cats)} 个栏目：{', '.join(cats)}）")
+    print(f"完成：重写 blog/index.html（栏目区块：{hub_region.count('hub-group')} 个）")
+    print(f"完成：生成栏目子页 {len(cat_pages)} 个（"
+          + ", ".join(f"blog/{s}/" for s, _, _ in cat_pages) + "）")
     print(f"完成：重写 blog/feed.xml（{len(posts)} 个 item + lastBuildDate）")
 
     orphans = sorted(existing_generated_filenames() - {p.filename for p in posts})

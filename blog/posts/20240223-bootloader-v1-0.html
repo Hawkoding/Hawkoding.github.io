@@ -34,12 +34,12 @@
     <main>
       <article>
         <header class="post-header">
-          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <a class="back-link" href="../tech/">← 返回技术</a>
           <h1>Bootloader_v1.0</h1>
           <p class="post-deck">我们常用的项目开发流程中很少会使用到BootLoader，但是在需要持续更新迭代的项目中，使用BootLoader能够极大地提高用户的使用体验。……</p>
           <div class="post-meta">
             <time datetime="2024-02-23">2024.02.23</time>
-            <span>单片机</span>
+            <span>MCU</span>
             <span>3 min read</span>
           </div>
         </header>
@@ -53,7 +53,7 @@
 
           <h2>启动方式</h2>
 
-          <p>单片机具有Boot0和Boot1脚，在正点原子或者野火的学习板上我们可以通过跳线帽选择启动方式： <img src="<a href="https://hawkj02.github.io/CL4H/_images/pic1.png">https://hawkj02.github.io/CL4H/_images/pic1.png</a>" alt="三种启动方式" loading="lazy"> _三种启动方式_<br>1、第一种方式(boot0 = 0)：Flash memory启动方式 启动地址：0x08000000 是STM32内置的Flash，一般我们使用JTAG或者SWD模式下载程序时，就是下载到这个里面，重启后也直接从这启动程序。基本上都是采用这种模式。</p>
+          <p>单片机具有Boot0和Boot1脚，在正点原子或者野火的学习板上我们可以通过跳线帽选择启动方式： <img src="https://hawkj02.github.io/CL4H/_images/pic1.png" alt="三种启动方式" loading="lazy"> _三种启动方式_<br>1、第一种方式(boot0 = 0)：Flash memory启动方式 启动地址：0x08000000 是STM32内置的Flash，一般我们使用JTAG或者SWD模式下载程序时，就是下载到这个里面，重启后也直接从这启动程序。基本上都是采用这种模式。</p>
 
           <p>2、第二种方式(boot0 = 1；boot1 = 0)：System memory启动方式 启动地址：0x1FFF0000从系统存储器启动，这种模式启动的程序功能是由厂家设置的。一般来说，这种启动方式用的比较少。系统存储器是芯片内部一块特定的区域，STM32在出厂时，由ST在这个区域内部预置了一段BootLoader， 也就是我们常说的ISP程序， 这是一块ROM，出厂后无法修改。一般来说，我们选用这种启动模式时，是为了从串口下载程序，因为在厂家提供的BootLoader 中，提供了串口下载程序的固件，可以通过这个BootLoader将程序下载到系统的Flash中。但是这个下载方式需要以下步骤：</p>
 
@@ -67,7 +67,7 @@
 
           <h2>从flash启动</h2>
 
-          <p>无论如何单片机都是从0x0000\_0000的位置开始运行的，其中最重要的就是<strong>PC</strong>和<strong>SP</strong>，PC指的是当前运行的位置，SP指向当前使用RAM的堆栈栈顶。<br>我们知道在keil中的魔法棒工具栏中可以选择ROM（即flash）和RAM的起始地址和大小， <img src="<a href="https://hawkj02.github.io/CL4H/_images/pic2.png">https://hawkj02.github.io/CL4H/_images/pic2.png</a>" alt="keil魔法棒" loading="lazy"> _ROM和RAM的地址选择_ 当单片机刚上电的时候，会根据Boot0和Boot1的状态选择启动方式，比如选择启动方式1（从flash启动），就会将图中0x0800\_0000处的flash内容复制到0x0000\_0000处开始运行。<br>下面的表格是刚上电时单片机ROM中的状态，此时已将flash内容映射到0x0000\_0000：</p>
+          <p>无论如何单片机都是从0x0000\_0000的位置开始运行的，其中最重要的就是<strong>PC</strong>和<strong>SP</strong>，PC指的是当前运行的位置，SP指向当前使用RAM的堆栈栈顶。<br>我们知道在keil中的魔法棒工具栏中可以选择ROM（即flash）和RAM的起始地址和大小， <img src="https://hawkj02.github.io/CL4H/_images/pic2.png" alt="keil魔法棒" loading="lazy"> _ROM和RAM的地址选择_ 当单片机刚上电的时候，会根据Boot0和Boot1的状态选择启动方式，比如选择启动方式1（从flash启动），就会将图中0x0800\_0000处的flash内容复制到0x0000\_0000处开始运行。<br>下面的表格是刚上电时单片机ROM中的状态，此时已将flash内容映射到0x0000\_0000：</p>
 
           <p>指针</p>
 

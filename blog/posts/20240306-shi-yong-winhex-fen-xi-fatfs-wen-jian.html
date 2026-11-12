@@ -34,12 +34,12 @@
     <main>
       <article>
         <header class="post-header">
-          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <a class="back-link" href="../tech/">← 返回技术</a>
           <h1>使用winhex分析FatFs文件结构</h1>
           <p class="post-deck">winhex是一个常用的磁盘分析工具（虽然我也是第一次用），这次主要来分析一下Fatfs的文件系统架构，加深对其的理解。……</p>
           <div class="post-meta">
             <time datetime="2024-03-06">2024.03.06</time>
-            <span>单片机</span>
+            <span>MCU</span>
             <span>9 min read</span>
           </div>
         </header>
@@ -53,7 +53,7 @@
 
           <p><strong>（2024/3/6修正上面的段落）MBR类似于单向链表的头，我们程序中的Fatfs\[vol\]能够获取当前物理设备的MBR，然后根据MBR里特定的偏移量数据（逻辑分区0的扇区号偏移量），获取到逻辑分区0，也就是下图中的DBR，根据DBR提供的保留扇区数等信息，我们又可以计算得到FAT表的位置，FAT表中存储着每一个簇的使用情况，以及对于占有多个簇的文件（还是类似于单向链表在内存管理中发挥到的作用，在内存中存储时不连续的，所以需要链表将不连续的内存连接在一起），再向后偏移FAT表占扇区数\*FAT表的个数，我们又能够找到数据区，数据区的扇区0（对应着的簇号是簇2）存储着根目录，根目录就类似于文章的目录，形成一个树状结构，我们就能找到各个文件所在的位置。综上，我们只要知道MBR这512个字节存储着的是什么，我们就能通过相对位置偏移，从物理存储设备中读取到我们想要的文件。</strong></p>
 
-          <p>本文参考：<a href="<a href="https://www.sunev.cn/embedded/943.html">https://www.sunev.cn/embedded/943.html</a>">FatFs文件系统结构分析（强烈推荐） - 尚为网 (sunev.cn)</a></p>
+          <p>本文参考：<a href="https://www.sunev.cn/embedded/943.html">FatFs文件系统结构分析（强烈推荐） - 尚为网 (sunev.cn)</a></p>
 
           <p><img src="../../images/blog/2024/03/image-33.png" alt="" loading="lazy"></p>
 
@@ -157,7 +157,7 @@
 
           <p>接下来，3~7 号表项为磁盘中存储的文件，共 5 个文件，每个文件都比较小，各自占用了 1 个簇。<strong>文件至少占用一个簇，所以新建文件的时候，即使你只写入 1 字节的数据，它也会占用一个簇的空间</strong>。如果是存储的大文件，则会占用多个簇，当前 FAT 表项纪录下一个 FAT 表项编号，依次类推直到最后以“0F FF FF FF”表示文件末尾。</p>
 
-          <p>还有一些概念，可以用于查找（参考：<a href="<a href="https://blog.51cto.com/u_16099321/7739958">https://blog.51cto.com/u_16099321/7739958</a>">fatfs文件系统架构 fat文件系统详解\_mob6454cc7796a7的技术博客\_51CTO博客</a>）：</p>
+          <p>还有一些概念，可以用于查找（参考：<a href="https://blog.51cto.com/u_16099321/7739958">fatfs文件系统架构 fat文件系统详解\_mob6454cc7796a7的技术博客\_51CTO博客</a>）：</p>
 
           <ol>
           <li>FAT32 中每个簇的簇地址，是有 32bit（4 个字节）记录在 FAT 表中。FAT 表中的所有字节位置以4 字节为单位进行划分，并对所有划分后的位置由 0 进行地址编号。0 号地址与 1 号地址被系统保留并存储特殊标志内容。从 2 号地址开始，每个地址对应于数据区的簇号，FAT 表中的地址编号与数据区中的簇号相同。我们称 FAT 表中的这些地址为 FAT 表项，FAT 表项中记录的值称为 FAT表项值。<br></li>

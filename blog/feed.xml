@@ -9,7 +9,7 @@
     <link>https://hawkoding.github.io/blog/</link>
     <description>Hawk的博客：研究、工程与日常思考。</description>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 12 Nov 2026 21:03:51 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 12 Nov 2026 21:32:06 +0800</lastBuildDate>
     <atom:link href="https://hawkoding.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
     <!-- ITEMS:BEGIN -->
     <item>
@@ -153,7 +153,7 @@
       <link>https://hawkoding.github.io/blog/posts/20240531-yi-dong-ling.html</link>
       <guid>https://hawkoding.github.io/blog/posts/20240531-yi-dong-ling.html</guid>
       <pubDate>Fri, 31 May 2024 00:00:00 +0800</pubDate>
-      <description>https://leetcode-cn.com/problems/move-zeroes/"&gt;题目链接：283.移动零给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素……</description>
+      <description>题目链接：283.移动零给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。请注意，必须在不复制数组的情况下原地对数组进行操作。</description>
     </item>
 
     <item>
@@ -169,7 +169,7 @@
       <link>https://hawkoding.github.io/blog/posts/20240530-206-fan-zhuan-lian-biao.html</link>
       <guid>https://hawkoding.github.io/blog/posts/20240530-206-fan-zhuan-lian-biao.html</guid>
       <pubDate>Thu, 30 May 2024 00:00:00 +0800</pubDate>
-      <description>https://leetcode.cn/problems/reverse-linked-list/?……</description>
+      <description>反转链表题目链接反转链表是个经典题型，主要是利用到单向链表的特性，如果第一次做没做出来也正常(me too~)，因为链表的特性比较特殊，还是要掌握适当的方法才能够更好的掌握链表相关的。……</description>
     </item>
 
     <item>
@@ -425,7 +425,7 @@
       <link>https://hawkoding.github.io/blog/posts/20231224-10-you-xiang-yu-ruan-jian-ding-shi-qi.html</link>
       <guid>https://hawkoding.github.io/blog/posts/20231224-10-you-xiang-yu-ruan-jian-ding-shi-qi.html</guid>
       <pubDate>Sun, 24 Dec 2023 00:00:00 +0800</pubDate>
-      <description>Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</description>
+      <description>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</description>
     </item>
 
     <item>
@@ -433,7 +433,7 @@
       <link>https://hawkoding.github.io/blog/posts/20231222-2-lin-jie-duan-dui-xiang-rong-qi-yu.html</link>
       <guid>https://hawkoding.github.io/blog/posts/20231222-2-lin-jie-duan-dui-xiang-rong-qi-yu.html</guid>
       <pubDate>Fri, 22 Dec 2023 00:00:00 +0800</pubDate>
-      <description>Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</description>
+      <description>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</description>
     </item>
 
     <item>
@@ -441,7 +441,7 @@
       <link>https://hawkoding.github.io/blog/posts/20231222-3-duo-you-xian-ji-yu-ruan-jian-ding-shi.html</link>
       <guid>https://hawkoding.github.io/blog/posts/20231222-3-duo-you-xian-ji-yu-ruan-jian-ding-shi.html</guid>
       <pubDate>Fri, 22 Dec 2023 00:00:00 +0800</pubDate>
-      <description>Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</description>
+      <description>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</description>
     </item>
 
     <item>
@@ -457,7 +457,7 @@
       <link>https://hawkoding.github.io/blog/posts/20231222-5-yi-zhi-rtt-bing-dong-tai-chuang-jian.html</link>
       <guid>https://hawkoding.github.io/blog/posts/20231222-5-yi-zhi-rtt-bing-dong-tai-chuang-jian.html</guid>
       <pubDate>Fri, 22 Dec 2023 00:00:00 +0800</pubDate>
-      <description>Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</description>
+      <description>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</description>
     </item>
 
     <item>
@@ -465,7 +465,7 @@
       <link>https://hawkoding.github.io/blog/posts/20231222-6-rtt-de-shell-qi-dong-fang-shi.html</link>
       <guid>https://hawkoding.github.io/blog/posts/20231222-6-rtt-de-shell-qi-dong-fang-shi.html</guid>
       <pubDate>Fri, 22 Dec 2023 00:00:00 +0800</pubDate>
-      <description>Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</description>
+      <description>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</description>
     </item>
 
     <item>
@@ -473,7 +473,7 @@
       <link>https://hawkoding.github.io/blog/posts/20231222-7-xian-cheng-guan-li-yi-ji-bei-lun.html</link>
       <guid>https://hawkoding.github.io/blog/posts/20231222-7-xian-cheng-guan-li-yi-ji-bei-lun.html</guid>
       <pubDate>Fri, 22 Dec 2023 00:00:00 +0800</pubDate>
-      <description>Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</description>
+      <description>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</description>
     </item>
 
     <item>
@@ -481,7 +481,7 @@
       <link>https://hawkoding.github.io/blog/posts/20231222-8-xiao-xi-dui-lie-xin-hao-liang-ji-dui.html</link>
       <guid>https://hawkoding.github.io/blog/posts/20231222-8-xiao-xi-dui-lie-xin-hao-liang-ji-dui.html</guid>
       <pubDate>Fri, 22 Dec 2023 00:00:00 +0800</pubDate>
-      <description>Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</description>
+      <description>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</description>
     </item>
 
     <item>
@@ -489,7 +489,7 @@
       <link>https://hawkoding.github.io/blog/posts/20231222-9-hu-chi-liang-yu-shi-jian.html</link>
       <guid>https://hawkoding.github.io/blog/posts/20231222-9-hu-chi-liang-yu-shi-jian.html</guid>
       <pubDate>Fri, 22 Dec 2023 00:00:00 +0800</pubDate>
-      <description>Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</description>
+      <description>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</description>
     </item>
 
     <item>
@@ -505,7 +505,7 @@
       <link>https://hawkoding.github.io/blog/posts/20231207-1-xian-cheng-ding-yi-yu-qie-huan.html</link>
       <guid>https://hawkoding.github.io/blog/posts/20231207-1-xian-cheng-ding-yi-yu-qie-huan.html</guid>
       <pubDate>Thu, 07 Dec 2023 00:00:00 +0800</pubDate>
-      <description>Github链接：https://github.com/JiegeLinux/RT-Thread_Handmade"&gt;JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thre……</description>
+      <description>Github链接：JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</description>
     </item>
 
     <item>

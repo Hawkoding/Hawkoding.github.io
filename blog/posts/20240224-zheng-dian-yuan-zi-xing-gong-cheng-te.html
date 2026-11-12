@@ -34,12 +34,12 @@
     <main>
       <article>
         <header class="post-header">
-          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <a class="back-link" href="../tech/">← 返回技术</a>
           <h1>正点原子型工程特点分析</h1>
           <p class="post-deck">曾经做开发的时候用正点原子的工程真的要骂娘，因为sys.c文件和delay.c等等工程的存在导致移植开发的困难，所以之前我宁可找野火的工程修改IO端口配置都不愿意用正点原子的。……</p>
           <div class="post-meta">
             <time datetime="2024-02-24">2024.02.24</time>
-            <span>单片机</span>
+            <span>MCU</span>
             <span>3 min read</span>
           </div>
         </header>
@@ -67,7 +67,7 @@
 
           <p>在运行这段程序的时候，MCU进行以下操作：<br>//1.读取ODR寄存器的值到内存<br>//2.改写第2bit的值<br>//3.再把改写后的值写进ODR寄存器</p>
 
-          <p>作为抠门的程序员，你自然不希望牵一发动全身，cortex-M3等内核在芯片上设计了内存映射的功能，参考《Cortex-M3权威指南》（Joseph Yiu 著 宋岩 译）的第83-92页（文章链接由maipdf生成，可供下载：<a href="<a href="https://maifile.cn/est/d65d99f5402a81/pdf">https://maifile.cn/est/d65d99f5402a81/pdf</a>"><a href="https://maifile.cn/est/d65d99f5402a81/pdf">https://maifile.cn/est/d65d99f5402a81/pdf</a></a>）。</p>
+          <p>作为抠门的程序员，你自然不希望牵一发动全身，cortex-M3等内核在芯片上设计了内存映射的功能，参考《Cortex-M3权威指南》（Joseph Yiu 著 宋岩 译）的第83-92页（文章链接由maipdf生成，可供下载：<a href="https://maifile.cn/est/d65d99f5402a81/pdf">https://maifile.cn/est/d65d99f5402a81/pdf</a>）。</p>
 
           <p>映射在stm32中是一个重要的概念，与内存管理相关。</p>
 

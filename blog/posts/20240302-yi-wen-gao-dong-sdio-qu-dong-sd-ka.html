@@ -34,12 +34,12 @@
     <main>
       <article>
         <header class="post-header">
-          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <a class="back-link" href="../tech/">← 返回技术</a>
           <h1>一文搞懂SDIO驱动SD卡</h1>
           <p class="post-deck">SD卡用于嵌入式设备已经是屡见不鲜了，对于SD卡进行读写操作有两种方式，一种是SPI，另一种就是SDIO。SD卡有三种容量选择：</p>
           <div class="post-meta">
             <time datetime="2024-03-02">2024.03.02</time>
-            <span>单片机</span>
+            <span>MCU</span>
             <span>3 min read</span>
           </div>
         </header>
@@ -118,7 +118,7 @@
 
           <p>SD的命令分为ACMD和CMD，可以理解为CMD是通用命令，ACMD是SD卡制造商设置的的特定应用命令。在传输ACMD命令之前，需要主机先发出CMD55指令，随后的第一条命令就是ACMD命令。</p>
 
-          <p><img src="<a href="https://doc.embedfire.com/mcu/stm32/f407batianhu/std/zh/latest/_images/SDIO02.png">https://doc.embedfire.com/mcu/stm32/f407batianhu/std/zh/latest/_images/SDIO02.png</a>" alt="SD部分命令描述" loading="lazy"></p>
+          <p><img src="https://doc.embedfire.com/mcu/stm32/f407batianhu/std/zh/latest/_images/SDIO02.png" alt="SD部分命令描述" loading="lazy"></p>
 
           <p>命令查找表</p>
 
@@ -126,7 +126,7 @@
 
           <p>SDIO接口能识别7种响应方式，而SD卡向主机发送的响应一共有5种响应方式，R代表Response：</p>
 
-          <p><img src="<a href="https://doc.embedfire.com/mcu/stm32/f407batianhu/std/zh/latest/_images/SDIO03.png">https://doc.embedfire.com/mcu/stm32/f407batianhu/std/zh/latest/_images/SDIO03.png</a>" alt="SD卡响应类型" loading="lazy"></p>
+          <p><img src="https://doc.embedfire.com/mcu/stm32/f407batianhu/std/zh/latest/_images/SDIO03.png" alt="SD卡响应类型" loading="lazy"></p>
 
           <h2>数据传输</h2>
 
@@ -164,7 +164,7 @@
 
           <p>主机和SD卡都存在卡识别模式和数据传输模式：</p>
 
-          <p><img src="<a href="https://doc.embedfire.com/mcu/stm32/f407batianhu/std/zh/latest/_images/SDIO04.png">https://doc.embedfire.com/mcu/stm32/f407batianhu/std/zh/latest/_images/SDIO04.png</a>" alt="SD卡状态与操作模式" loading="lazy"></p>
+          <p><img src="https://doc.embedfire.com/mcu/stm32/f407batianhu/std/zh/latest/_images/SDIO04.png" alt="SD卡状态与操作模式" loading="lazy"></p>
 
           <p>在系统复位后，主机处于卡识别模式， 寻找总线上可用的SDIO设备；同时，SD卡也处于卡识别模式，直到被主机识别到，即当SD卡接收到SEND\_RCA(CMD3)命令后， SD卡就会进入数据传输模式，而主机在总线上所有卡被识别后也进入数据传输模式。</p>
 

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="内核驱动与嵌入式的工程笔记：MCU 实战、RTOS 原理、Linux 驱动与示波器项目。">
+  <title>技术 — Hawk's Notes</title>
+  <link rel="canonical" href="https://hawkoding.github.io/blog/tech/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="技术 — Hawk's Notes">
+  <meta property="og:description" content="内核驱动与嵌入式的工程笔记：MCU 实战、RTOS 原理、Linux 驱动与示波器项目。">
+  <meta property="og:url" content="https://hawkoding.github.io/blog/tech/">
+  <link rel="alternate" type="application/rss+xml" title="Hawk's Notes RSS" href="../feed.xml">
+  <link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><strong>Hawk's Notes</strong><span>随想录</span></a>
+      <nav aria-label="博客导航">
+        <a href="../../index.html">关于我</a>
+        <a href="../index.html">文章</a>
+        <a class="rss" href="../feed.xml">RSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <header class="cat-header">
+        <a class="back-link" href="../index.html">← 返回全部栏目</a>
+        <h1>技术</h1>
+        <p class="cat-desc">内核驱动与嵌入式的工程笔记：MCU 实战、RTOS 原理、Linux 驱动与示波器项目。</p>
+      </header>
+
+      <div class="cat-body">
+          <section aria-labelledby="sub-mcu">
+            <div class="section-heading">
+              <h2 id="sub-mcu">MCU</h2>
+              <span class="section-label">No. 044</span>
+            </div>
+
+          <article class="article-card">
+            <a href="../posts/20240531-guo-sai-re-shen.html">
+              <div class="meta">
+                <time datetime="2024-05-31">2024.05.31</time>
+                <span>MCU</span>
+                <span>4 min read</span>
+              </div>
+              <h3>国赛热身</h3>
+              <p>今年十五届国赛不使用扩展板，那么与省赛估计就没啥区别，刷题也刷倦了，但肯定会使用到更多的外设。……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240531-lan-qiao-bei-sai-qian-su-ji.html">
+              <div class="meta">
+                <time datetime="2024-05-31">2024.05.31</time>
+                <span>MCU</span>
+                <span>5 min read</span>
+              </div>
+              <h3>蓝桥杯赛前速记</h3>
+              <p>蓝桥杯这破板子上的外设也就那么多，所以首先我们把所有的外设过一遍，根据历年的真题，如果有重复使用的外设或者操作就不再赘述。并且之前文章中很简单的操作也不再赘述。</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240520-12th-guo-sai.html">
+              <div class="meta">
+                <time datetime="2024-05-20">2024.05.20</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>12th国赛</h3>
+              <p>2024年5月17日收到主委会短信说不再使用扩展板，其实也没啥区别==。十二届国赛的关键注意点在于以下部分。……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240412-kao-qian-zhu-yi-shi-xiang.html">
+              <div class="meta">
+                <time datetime="2024-04-12">2024.04.12</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>考前注意事项</h3>
+              <p>如果LED不闪烁，一定要先查看GPIOD2是否在cubemx中设置，控制锁存器。如果需要精确定时，则写在systick中断或者在中断中放入led标志位来通知主循环控制led。</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240327-section-zai-chu-shi-hua-zhong-de-miao.html">
+              <div class="meta">
+                <time datetime="2024-03-27">2024.03.27</time>
+                <span>MCU</span>
+                <span>4 min read</span>
+              </div>
+              <h3>section在初始化中的妙用</h3>
+              <p>在阅读大佬源码的时候，经常会看到天花乱坠的define和attribute关键字，还有align之类的对齐方式，但是我认为大佬常用的必然是好的（相较于我这个小菜鸡的coding而言），这一章我们主要来……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240317-ldr-strex-fang-zhen.html">
+              <div class="meta">
+                <time datetime="2024-03-17">2024.03.17</time>
+                <span>MCU</span>
+                <span>2 min read</span>
+              </div>
+              <h3>LDR-STREX仿真</h3>
+              <p>这是一段很有意思的汇编代码，源于Cortex-M3权威指南的94页。我们知道在RTOS中有着Mutex信号量，用于互斥访问，因为当两个线程共用一个数据或者外设的时候，很容易就造成问题。</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240315-dan-xiang-lian-biao.html">
+              <div class="meta">
+                <time datetime="2024-03-15">2024.03.15</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>单向链表</h3>
+              <p>链表在内存空间中的存储是随机的，通过指针单（双向）连接，相较于内存空间连续的数组，优点在于链表长度不固定（可以add或del），缺点在于不能够像数组一样通过下标的方式查找到节点，而是需要遍历链表。</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240310-bootloader-v2-0.html">
+              <div class="meta">
+                <time datetime="2024-03-10">2024.03.10</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>Bootloader_v2.0</h3>
+              <p>在1.0版本实现了APP跳转的基础上，2.0版本能够支持使用SD卡进行更新，仅需要将需要更新的App.bin文件放置在SD卡的0:Update目录下，在开发板上电后按下KEY0则可进行App更新，倘若……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240310-shi-yong-tim-ce-liang-mai-chong-kuan-du.html">
+              <div class="meta">
+                <time datetime="2024-03-10">2024.03.10</time>
+                <span>MCU</span>
+                <span>2 min read</span>
+              </div>
+              <h3>使用TIM测量脉冲宽度以及频率——输入捕获</h3>
+              <p>近几年的赛题都没有考察到输入捕获，所以今年省赛是有一定的概率考察到的。在本章节中，我将使用两种方式进行输入捕获。名词介绍，输入捕获：INPUT\_CAPTURE。</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240310-shuang-huan-chong-qu.html">
+              <div class="meta">
+                <time datetime="2024-03-10">2024.03.10</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>双缓冲区</h3>
+              <p>在裸机程序中使用IDLE空闲中断串口接收时，同时程序也在循环中不断处理数据。如果刚好运行到数据处理结束，即将清空数据的时候，串口中断产生，并带来了新的数据，返回后新数据就会被清除，导致ERROR发生。</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240310-kuo-zhan-sram.html">
+              <div class="meta">
+                <time datetime="2024-03-10">2024.03.10</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>扩展SRAM</h3>
+              <p>## 语言：C编译器：Keil5stm32库：HAL-1.5.x串口：UART1 ```C//sram.c#include "sram.h"#include "delay.h"////////////……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240306-shi-yong-winhex-fen-xi-fatfs-wen-jian.html">
+              <div class="meta">
+                <time datetime="2024-03-06">2024.03.06</time>
+                <span>MCU</span>
+                <span>9 min read</span>
+              </div>
+              <h3>使用winhex分析FatFs文件结构</h3>
+              <p>winhex是一个常用的磁盘分析工具（虽然我也是第一次用），这次主要来分析一下Fatfs的文件系统架构，加深对其的理解。……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240305-fatfs-wen-jian-xi-tong.html">
+              <div class="meta">
+                <time datetime="2024-03-05">2024.03.05</time>
+                <span>MCU</span>
+                <span>7 min read</span>
+              </div>
+              <h3>FatFs文件系统</h3>
+              <p>存在有文件系统的程序框架图如下：我们只需要提供写disk和读disk两个函数就可以实现底层与中间层的对接，我们主要修改diskio.c这个文件，完善其中的五个函数：disk\_initialize：初……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240305-bmp-888.html">
+              <div class="meta">
+                <time datetime="2024-03-05">2024.03.05</time>
+                <span>MCU</span>
+                <span>2 min read</span>
+              </div>
+              <h3>bmp_888</h3>
+              <p>参考文章：截屏！使用FatFs存储24位色BMP图像至SD卡语言：C编译器：Keil5stm32库：HAL-1.5.x串口：UART1</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240304-jie-ping-shi-yong-fatfs-cun-chu-24-wei.html">
+              <div class="meta">
+                <time datetime="2024-03-04">2024.03.04</time>
+                <span>MCU</span>
+                <span>2 min read</span>
+              </div>
+              <h3>截屏！使用FatFs存储24位色BMP图像至SD卡</h3>
+              <p>该实验的起因是我在开源示波器osc509上发现的波形截图功能，我觉得这个功能很有意思，所以我希望自己实现一遍，完整的实验需要你具有以下的知识：</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240302-yi-wen-gao-dong-sdio-qu-dong-sd-ka.html">
+              <div class="meta">
+                <time datetime="2024-03-02">2024.03.02</time>
+                <span>MCU</span>
+                <span>3 min read</span>
+              </div>
+              <h3>一文搞懂SDIO驱动SD卡</h3>
+              <p>SD卡用于嵌入式设备已经是屡见不鲜了，对于SD卡进行读写操作有两种方式，一种是SPI，另一种就是SDIO。SD卡有三种容量选择：</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240228-11th-sheng-sai-sai-ti-fen-xi.html">
+              <div class="meta">
+                <time datetime="2024-02-28">2024.02.28</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>11th省赛赛题分析</h3>
+              <p>11届省赛赛题十分简单，主要需要参考以下文章：LED：[\[蓝桥杯\]LED模块– www.hawkjgogogo.co](http://www.hawkjgogogo.com/2024/01/16/……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240228-adc-mo-kuai.html">
+              <div class="meta">
+                <time datetime="2024-02-28">2024.02.28</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>ADC模块</h3>
+              <p>本模块取自G4开发板，f1开发板的配置类似。 G4开发板的ADC主要有以下3个应用，配置都类似。由电路图可知,训练板上有三路模拟信号输入:</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240226-yi-wen-gao-dong-fsmc-zong-xian.html">
+              <div class="meta">
+                <time datetime="2024-02-26">2024.02.26</time>
+                <span>MCU</span>
+                <span>10 min read</span>
+              </div>
+              <h3>一文搞懂FSMC总线</h3>
+              <p>大多数同学学习FSMC总线是因为正点原子或者类似开发板使用的LCD屏，但是由于驱动LCD屏只是用了FSMC的一个特性，就会导致以偏概全，难以理解。……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240226-yi-wen-gao-dong-gd32f4xx-de-shi-zhong.html">
+              <div class="meta">
+                <time datetime="2024-02-26">2024.02.26</time>
+                <span>MCU</span>
+                <span>2 min read</span>
+              </div>
+              <h3>一文搞懂GD32f4xx的时钟配置</h3>
+              <p>本文的实验硬件是GD32f427ZGT6，主频200Mhz 时钟就是单片机的脉搏，比如单片机如何知道1s是多长呢，就是16M的晶振震动了16M次，stm32类型的单片机一般有五个时钟源：①、HSI是高……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240224-zheng-dian-yuan-zi-xing-gong-cheng-te.html">
+              <div class="meta">
+                <time datetime="2024-02-24">2024.02.24</time>
+                <span>MCU</span>
+                <span>3 min read</span>
+              </div>
+              <h3>正点原子型工程特点分析</h3>
+              <p>曾经做开发的时候用正点原子的工程真的要骂娘，因为sys.c文件和delay.c等等工程的存在导致移植开发的困难，所以之前我宁可找野火的工程修改IO端口配置都不愿意用正点原子的。……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240223-bootloader-v1-0.html">
+              <div class="meta">
+                <time datetime="2024-02-23">2024.02.23</time>
+                <span>MCU</span>
+                <span>3 min read</span>
+              </div>
+              <h3>Bootloader_v1.0</h3>
+              <p>我们常用的项目开发流程中很少会使用到BootLoader，但是在需要持续更新迭代的项目中，使用BootLoader能够极大地提高用户的使用体验。……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240216-12th-sheng-sai-si-lu-fen-xi-ji-dai-ma.html">
+              <div class="meta">
+                <time datetime="2024-02-16">2024.02.16</time>
+                <span>MCU</span>
+                <span>2 min read</span>
+              </div>
+              <h3>12th省赛思路分析及代码解构(UART与数据结构)</h3>
+              <p>与已经做过了题目不同，这届省赛更加注重对于代码能力的考查，个人认为相较于调库而言更有实际意义以及更加考验代码能力。通过本次练习能提高数据结构的实际应用能力。</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240116-13th-sheng-sai-si-lu-fen-xi-ji-dai-ma.html">
+              <div class="meta">
+                <time datetime="2024-01-16">2024.01.16</time>
+                <span>MCU</span>
+                <span>3 min read</span>
+              </div>
+              <h3>13th省赛思路分析及代码解构</h3>
+              <p>13届省赛题目在一定程度是比较简单的，考察的十分基础。类似于制作了一个保险箱的基本功能。题目：首先硬件框图可以大致看一看，使用到的模块有</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240116-lcd-mo-kuai.html">
+              <div class="meta">
+                <time datetime="2024-01-16">2024.01.16</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>LCD模块</h3>
+              <p>LCD模块基本是调用lcd.c中定义的函数。显示并不困难，容易出错的是LCD上显示的位置，比如下题有几个注意的要点：</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240116-led-mo-kuai.html">
+              <div class="meta">
+                <time datetime="2024-01-16">2024.01.16</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>LED模块</h3>
+              <p>由于CubeMX在生成代码的过程中已经把LED的GPIO初始化，而LED就是通过GPIO来实现控制的。所以我们只需要使用HAL库的GPIO读写函数就能实现对LED的控制。</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240116-jie-jue-led-yu-lcd-xian-shi-chong-tu.html">
+              <div class="meta">
+                <time datetime="2024-01-16">2024.01.16</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>解决LED与LCD显示冲突（LED乱闪）</h3>
+              <p>由于LED和LCD的引脚共用问题，所以在一些情况下LED会乱闪。我们需要在三个关于写寄存器的函数的首尾添加相同的两行代码。</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240115-an-jian-mo-kuai.html">
+              <div class="meta">
+                <time datetime="2024-01-15">2024.01.15</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>按键模块</h3>
+              <p>在每一届蓝桥杯的赛题中都会使用到B1-B4这四个按键中的几个，那么在没有参考的情况下，我认为理解是最好的记忆方式。……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240112-kai-yuan-shi-bo-qi-tan-tou-yu-fang-zhen.html">
+              <div class="meta">
+                <time datetime="2024-01-12">2024.01.12</time>
+                <span>MCU</span>
+                <span>4 min read</span>
+              </div>
+              <h3>开源示波器 探头与仿真</h3>
+              <p>对于我们常用的示波器而言，无源探头是必不可少了，如果最开始采集进来的数据就不精确，那么就更不用提后面的转换和处理等操作了。</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240110-kai-yuan-shi-bo-qi-qian-qing-ti-yao.html">
+              <div class="meta">
+                <time datetime="2024-01-10">2024.01.10</time>
+                <span>MCU</span>
+                <span>3 min read</span>
+              </div>
+              <h3>开源示波器 前情提要</h3>
+              <p>在手搓了RTT之后，我打算用之前学习到的内容，搓一个开源数字存储示波器。数字存储示波器的软件流程是这样子的： DSO的软件流程是串行的。……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240107-12-zhong-duan-guan-li.html">
+              <div class="meta">
+                <time datetime="2024-01-07">2024.01.07</time>
+                <span>MCU</span>
+                <span>2 min read</span>
+              </div>
+              <h3>12、中断管理</h3>
+              <p>既然我们使用了RTT实时操作系统，那么相应的，系统也会管理stm32的中断。无论线程具有怎么样的优先级，终端都能够打断线程的运行。……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240106-11-nei-cun-guan-li.html">
+              <div class="meta">
+                <time datetime="2024-01-06">2024.01.06</time>
+                <span>MCU</span>
+                <span>6 min read</span>
+              </div>
+              <h3>11、※内存管理</h3>
+              <p>内存管理是最基础的，最根本的，单片机无非不是跟内存、内核打交道，任何程序都离不开内存，但是单片机的内存并不像台式机那样大。……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231224-10-you-xiang-yu-ruan-jian-ding-shi-qi.html">
+              <div class="meta">
+                <time datetime="2023-12-24">2023.12.24</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>10、邮箱与软件定时器</h3>
+              <p>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231222-2-lin-jie-duan-dui-xiang-rong-qi-yu.html">
+              <div class="meta">
+                <time datetime="2023-12-22">2023.12.22</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>2、临界段、对象容器与IDLE空闲线程</h3>
+              <p>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231222-3-duo-you-xian-ji-yu-ruan-jian-ding-shi.html">
+              <div class="meta">
+                <time datetime="2023-12-22">2023.12.22</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>3、多优先级与软件定时器</h3>
+              <p>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231222-4-shi-jian-pian.html">
+              <div class="meta">
+                <time datetime="2023-12-22">2023.12.22</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>4、时间片</h3>
+              <p>上一章中讲到的定时器是为了不同优先级的线程进行了排序，那么对于相同优先级的线程就要使用到时间片进行定时。主要就是看时间片用没用完，用完了就调度，我感觉用的不多，直接看现象吧！</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231222-5-yi-zhi-rtt-bing-dong-tai-chuang-jian.html">
+              <div class="meta">
+                <time datetime="2023-12-22">2023.12.22</time>
+                <span>MCU</span>
+                <span>3 min read</span>
+              </div>
+              <h3>5、移植RTT并动态创建线程</h3>
+              <p>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231222-6-rtt-de-shell-qi-dong-fang-shi.html">
+              <div class="meta">
+                <time datetime="2023-12-22">2023.12.22</time>
+                <span>MCU</span>
+                <span>3 min read</span>
+              </div>
+              <h3>6、RTT的Shell、启动方式</h3>
+              <p>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231222-7-xian-cheng-guan-li-yi-ji-bei-lun.html">
+              <div class="meta">
+                <time datetime="2023-12-22">2023.12.22</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>7、线程管理以及悖论</h3>
+              <p>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231222-8-xiao-xi-dui-lie-xin-hao-liang-ji-dui.html">
+              <div class="meta">
+                <time datetime="2023-12-22">2023.12.22</time>
+                <span>MCU</span>
+                <span>7 min read</span>
+              </div>
+              <h3>8、消息队列、信号量及堆栈分析</h3>
+              <p>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231222-9-hu-chi-liang-yu-shi-jian.html">
+              <div class="meta">
+                <time datetime="2023-12-22">2023.12.22</time>
+                <span>MCU</span>
+                <span>3 min read</span>
+              </div>
+              <h3>9、互斥量与事件</h3>
+              <p>Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231210-sram-yu-dram-de-ai-hen-qing-chou.html">
+              <div class="meta">
+                <time datetime="2023-12-10">2023.12.10</time>
+                <span>MCU</span>
+                <span>1 min read</span>
+              </div>
+              <h3>SRAM与DRAM的爱恨情仇</h3>
+              <p>其实这俩玩意儿并没有什么爱恨情仇，DRAM大致是SRAM的儿子罢了（笑）。 SRAM是静态随机存储器，想访问哪里就访问哪里，SRAM的电路：</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231207-1-xian-cheng-ding-yi-yu-qie-huan.html">
+              <div class="meta">
+                <time datetime="2023-12-07">2023.12.07</time>
+                <span>MCU</span>
+                <span>4 min read</span>
+              </div>
+              <h3>1、线程定义与切换</h3>
+              <p>Github链接：JiegeLinux/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231121-shen-ru-xue-xi-san-zhong-uart-mo-shi-ji.html">
+              <div class="meta">
+                <time datetime="2023-11-21">2023.11.21</time>
+                <span>MCU</span>
+                <span>2 min read</span>
+              </div>
+              <h3>深入学习三种UART模式及其实现</h3>
+              <p>usart的全称是 Universal Synchronous/Asynchronous Receiver/Transmitter，通用同步或异步收发器。……</p>
+            </a>
+          </article>          </section>
+
+          <section aria-labelledby="sub-linux">
+            <div class="section-heading">
+              <h2 id="sub-linux">Linux</h2>
+              <span class="section-label">No. 004</span>
+            </div>
+
+          <article class="article-card">
+            <a href="../posts/20240127-ge-zhong-pai-zai-sudo-apt-get-update.html">
+              <div class="meta">
+                <time datetime="2024-01-27">2024.01.27</time>
+                <span>Linux</span>
+                <span>1 min read</span>
+              </div>
+              <h3>各种派在sudo apt-get update时出现Failed to fetch -- 404 NOT FOUND</h3>
+              <p>无脑换源带来的后果就是忽略了小字：网上提供的大部分方法基本都是对于x86虚拟机换源，很少有人会去刻意提到这一点。在以下网址复制，或者在原先的源url链接中将ubuntu修改为ubuntu-ports：</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231207-git-pull-la-qu-shi-bai.html">
+              <div class="meta">
+                <time datetime="2023-12-07">2023.12.07</time>
+                <span>Linux</span>
+                <span>1 min read</span>
+              </div>
+              <h3>GIT PULL拉取失败</h3>
+              <p>如题，Git Pull拉取失败，文件夹内没有变化。是因为暂存区有东西。放弃所有缓存：</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231107-debian11-ti-huan-guo-nei-yuan.html">
+              <div class="meta">
+                <time datetime="2023-11-07">2023.11.07</time>
+                <span>Linux</span>
+                <span>1 min read</span>
+              </div>
+              <h3>Debian11替换国内源</h3>
+              <p>首先先备份源文件 sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231107-vim-bian-ji-qi-de-shi-yong-shuo-ming.html">
+              <div class="meta">
+                <time datetime="2023-11-07">2023.11.07</time>
+                <span>Linux</span>
+                <span>9 min read</span>
+              </div>
+              <h3>vim编辑器的使用说明</h3>
+              <p>无论是在debian还是ubuntu下都经常使用到神奇的vim编辑器，所以写了这篇文章做个记录。如果你刚下载好虚拟机，你的vim应该是一个大白板，甚至连行号都没有，所以我们进行初始化的配置。</p>
+            </a>
+          </article>          </section>
+
+          <section aria-labelledby="sub-bian-cheng">
+            <div class="section-heading">
+              <h2 id="sub-bian-cheng">编程</h2>
+              <span class="section-label">No. 003</span>
+            </div>
+
+          <article class="article-card">
+            <a href="../posts/20240531-yi-dong-ling.html">
+              <div class="meta">
+                <time datetime="2024-05-31">2024.05.31</time>
+                <span>编程</span>
+                <span>1 min read</span>
+              </div>
+              <h3>移动零</h3>
+              <p>题目链接：283.移动零给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。请注意，必须在不复制数组的情况下原地对数组进行操作。</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20240530-206-fan-zhuan-lian-biao.html">
+              <div class="meta">
+                <time datetime="2024-05-30">2024.05.30</time>
+                <span>编程</span>
+                <span>1 min read</span>
+              </div>
+              <h3>206.反转链表</h3>
+              <p>反转链表题目链接反转链表是个经典题型，主要是利用到单向链表的特性，如果第一次做没做出来也正常(me too~)，因为链表的特性比较特殊，还是要掌握适当的方法才能够更好的掌握链表相关的。……</p>
+            </a>
+          </article>
+
+          <article class="article-card">
+            <a href="../posts/20231103-shen-ru-xue-xi-cheng-xu-de-ji-shi-shu-ju.html">
+              <div class="meta">
+                <time datetime="2023-11-03">2023.11.03</time>
+                <span>编程</span>
+                <span>9 min read</span>
+              </div>
+              <h3>深入学习程序的基石——数据</h3>
+              <p>本文是对于csapp第二章的一个总结。作为ee工程师，学习csapp也是受到了23年十月初去博世bcsc面试的刺激，那次面试的最后，博博世的leader问我“你投的真的是软件开发吗？……</p>
+            </a>
+          </article>          </section>      </div>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Hawk</span>
+      <span class="counter">总访问 <span id="busuanzi_value_site_pv">--</span> 次 · 访客 <span id="busuanzi_value_site_uv">--</span> 人</span>
+      <span>随想录 / Hawk's Notes</span>
+    </footer>
+  </div>
+  <!-- 不蒜子访问统计（第三方脚本，被广告拦截器拦截时计数为空） -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

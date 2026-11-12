@@ -160,6 +160,66 @@ a { color: inherit; }
   padding: 62px 0 82px;
 }
 
+/* ── 总览页（hub）：三大类区块 ── */
+.hub {
+  padding: 62px 0 76px;
+}
+
+.hub-group {
+  margin-bottom: 58px;
+}
+
+.hub-group:last-child {
+  margin-bottom: 0;
+}
+
+.view-all {
+  display: inline-block;
+  margin-top: 18px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--muted);
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.view-all:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ── 栏目子页（blog/<slug>/） ── */
+.cat-header {
+  padding: 56px 0 26px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 44px;
+}
+
+.cat-header h1 {
+  margin: 16px 0 12px;
+  font-family: var(--serif);
+  font-size: clamp(32px, 6vw, 48px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.cat-desc {
+  max-width: 560px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.cat-body {
+  padding-bottom: 72px;
+}
+
+.cat-body .section-heading h2 {
+  font-size: 22px;
+}
+
 .section-heading {
   display: flex;
   align-items: center;

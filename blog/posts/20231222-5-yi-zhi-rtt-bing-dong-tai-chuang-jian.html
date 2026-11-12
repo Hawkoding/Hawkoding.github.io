@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Github链接：https://github.com/HawkJ02/RT-Thread_Handmade&quot;&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……">
+  <meta name="description" content="Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)">
   <title>5、移植RTT并动态创建线程 — Hawk's Notes</title>
   <meta property="og:type" content="article">
   <meta property="og:title" content="5、移植RTT并动态创建线程">
-  <meta property="og:description" content="Github链接：https://github.com/HawkJ02/RT-Thread_Handmade&quot;&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……">
+  <meta property="og:description" content="Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)">
   <meta property="article:published_time" content="2023-12-22T00:00:00+08:00">
   <!-- canonical / og:url / og:image / twitter:* 需要绝对 URL 且图片真实存在，
        本站部署在根路径 https://hawkoding.github.io/；上传封面图后取消注释:
@@ -34,24 +34,24 @@
     <main>
       <article>
         <header class="post-header">
-          <a class="back-link" href="../index.html">← 返回全部文章</a>
+          <a class="back-link" href="../tech/">← 返回技术</a>
           <h1>5、移植RTT并动态创建线程</h1>
-          <p class="post-deck">Github链接：https://github.com/HawkJ02/RT-Thread_Handmade"&gt;HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (gi……</p>
+          <p class="post-deck">Github链接：HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</p>
           <div class="post-meta">
             <time datetime="2023-12-22">2023.12.22</time>
-            <span>RTOS</span>
+            <span>MCU</span>
             <span>3 min read</span>
           </div>
         </header>
 
         <div class="post-body">
-          <p>Github链接：<a href="<a href="https://github.com/HawkJ02/RT-Thread_Handmade">https://github.com/HawkJ02/RT-Thread_Handmade</a>">HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</a></p>
+          <p>Github链接：<a href="https://github.com/HawkJ02/RT-Thread_Handmade">HawkJ02/RT-Thread\_Handmade: 手搓Rt-Thread (github.com)</a></p>
 
           <p>本章Chapter5还是跟着野火的例程将RTT移植至正点原子的精英V2开发板（牛头人），并且使用线程（动态分配）点灯！</p>
 
           <h2>安装RT\_Thread nano Pack</h2>
 
-          <p>pack包安装链接：<a href="<a href="https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.0.3.pack">https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.0.3.pack</a>"><a href="https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.0.3.pack">https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.0.3.pack</a></a><br>安装完毕后可以进入已安装软件包看到RTT 3.0.3：</p>
+          <p>pack包安装链接：<a href="https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.0.3.pack">https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.0.3.pack</a><br>安装完毕后可以进入已安装软件包看到RTT 3.0.3：</p>
 
           <p><img src="../../images/blog/2023/12/image-19.png" alt="" loading="lazy"></p>
 

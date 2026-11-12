@@ -1,6 +1,5 @@
 /*
   站点博客样式 · 与主页同源的纯 CSS，无构建依赖。
-  Design adapted from https://unik-lif.github.io (MIT License).
   主题色改 :root 中的 --accent 即可。
 */
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -354,6 +353,32 @@ a { color: inherit; }
   color: var(--ink-soft);
   font-size: 19px;
   font-style: italic;
+}
+
+/* md2blog 生成内容补充样式 */
+.post-body ol {
+  margin: -5px 0 28px 1.2em;
+  padding-left: 0.6em;
+}
+
+.post-body ol ol {
+  margin: 6px 0 0 0.4em;
+}
+
+.post-body code {
+  padding: 1px 6px;
+  border: 1px solid var(--line-soft);
+  border-radius: 5px;
+  background: var(--surface);
+  font-family: ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+  font-size: 0.85em;
+}
+
+.post-body hr {
+  margin: 42px auto;
+  width: 46%;
+  border: 0;
+  border-top: 1px solid var(--line);
 }
 
 .post-body .note {

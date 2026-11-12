@@ -1,7 +1,7 @@
 # Hawkoding.github.io · 学术主页整站（GitHub Pages 根域名部署）
 
 一个不依赖任何构建工具的纯静态个人主页整站：单页主页 + 博客 + 简历占位文件 +
-一键部署脚本。主页内容已填入李昊锦的真实信息（2026-11 按定稿文案填充）；
+一键部署脚本。主页内容已填入Hawk的真实信息（2026-11 按定稿文案填充）；
 `blog/` 内文章与 `cv/` 内 PDF 仍为**占位内容**，主页暂不设入口，
 待真实博文 / 简历 PDF 就绪后再替换并恢复链接。
 
@@ -10,15 +10,11 @@
 子路径下都不会破图、不会断链；若 `REPO_NAME` 改为普通仓库名，站点会自动
 发布在 `https://<你的用户名>.github.io/<仓库名>/` 子路径下，同样无需改动文件。
 
-> **致谢**：本站视觉与代码结构设计参考自
-> [unik-lif.github.io](https://unik-lif.github.io)（MIT License），特此致谢。
-> 本包未收录原站任何个人文件（头像、校徽图片、真实简历等）。
-
 ## 目录结构
 
 | 文件 | 说明 |
 | ---- | ---- |
-| `index.html` | 主页：单文件、样式内联，内容为李昊锦真实信息 |
+| `index.html` | 主页：单文件、样式内联，内容为Hawk真实信息 |
 | `blog/index.html` | 博客列表页（含 hero、文章卡片、侧栏） |
 | `blog/blog.css` | 博客样式（与主页同源风格） |
 | `blog/posts/` | 3 篇占位文章 + `_template.html` 新文章模板 |
@@ -120,10 +116,3 @@ git push -u origin main
   `https://<你的用户名>.github.io/` 根路径（无子路径），脚本自动识别；
   本仓库 `Hawkoding.github.io` 即属此类。
 - **免费版限制**：GitHub Free 账号的 Pages 仅支持公开仓库。
-
-## 设计致谢
-
-- 站点整体布局与视觉设计参考：[unik-lif.github.io](https://unik-lif.github.io)
-  （MIT License，Copyright (c) 2016 Michael Rose）。
-- 本包对其代码结构做了占位化改写，未包含原站任何个人内容；
-  如你沿用该设计，建议保留本致谢。

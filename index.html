@@ -1,30 +1,29 @@
 <!DOCTYPE html>
 <!--
   ═══════════════════════════════════════════════════════════════════
-  李昊锦 · 个人主页 / Haojin Li — Personal Homepage
+  Hawk · 个人主页  — Personal Homepage
   ───────────────────────────────────────────────────────────────────
   · 线上地址：https://hawkoding.github.io/（GitHub Pages 根域名）
   · 单文件页面：全部样式内联在下方 <style> 中，直接改这一个文件即可。
   · 配色：灰阶 + 深蓝（--accent: #2c3e6b），换主题色只需改 :root 变量。
   · 头像 / 校徽：当前为首字母与图标占位，替换为
-      <img class="photo"    src="images/avatar.jpg"      alt="李昊锦">
+      <img class="photo"    src="images/avatar.jpg"      alt="Hawk">
       <img class="edu-logo" src="images/school-logo.png" alt="江南大学">
     即可换成真实图片（对应位置已留注释）。
   · 图标：Font Awesome 6.5.1 走 CDN，需浏览器联网。
   · 移动端：640px 断点自适应，无需额外操作。
   · blog/ 与 cv/ 目录为占位内容，主页暂不设入口；待真实博文 / 简历 PDF
     就绪后，恢复导航 Blog 链接与页眉 CV 链接即可（相关样式均已保留）。
-  · 设计参考 unik-lif.github.io（MIT License），特此致谢。
   ═══════════════════════════════════════════════════════════════════
 -->
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>李昊锦 / Haojin Li</title>
-<meta name="description" content="李昊锦（Haojin Li），嵌入式软件工程师，就职于苏州普源精电（RIGOL）示波器事业部。专注 Linux 驱动、仪器通信软件与嵌入式 AI 边缘部署。">
+<title>Hawk</title>
+<meta name="description" content="Hawk，Linux内核驱动工程师。专注 Linux 驱动，边缘计算。">
 <meta property="og:type" content="website">
-<meta property="og:title" content="李昊锦 — 嵌入式软件工程师 / Embedded Software Engineer">
+<meta property="og:title" content="Hawk — Linux内核驱动工程师 / Linux Kernel Driver Engineer">
 <meta property="og:description" content="Linux 驱动（6 Gbps PCIe 链路）· 跨 ARM/x86 平台迁移（98% 代码复用）· RK3588 边缘 AI（NPU 吞吐 6×）。">
 <meta property="og:url" content="https://hawkoding.github.io/">
 <!-- 封面图就绪后取消注释（当前未上传 images/og-cover.png，暂避免死引用）:
@@ -123,7 +122,7 @@
     border: 2px solid var(--c2);
   }
   /* 首字母头像占位：换成真实照片时，把整个 <div class="photo initials">
-     替换为 <img class="photo" src="images/avatar.jpg" alt="李昊锦"> */
+     替换为 <img class="photo" src="images/avatar.jpg" alt="Hawk"> */
   header .photo.initials {
     display: flex;
     align-items: center;
@@ -554,7 +553,7 @@
 
   <!-- ═════ 顶部导航：monogram 为姓名拼音首字母 ═════ -->
   <nav class="site-nav" aria-label="主导航">
-    <a class="monogram" href="index.html" aria-label="返回李昊锦的主页">LH</a>
+    <a class="monogram" href="index.html" aria-label="返回Hawk的主页">HK</a>
     <div class="links">
       <a href="#research">Research</a>
       <a href="#awards">Awards</a>
@@ -564,14 +563,14 @@
 
   <!-- ═════ ① 页眉：头像 + 姓名 + 身份 + 联系方式（仅公开邮箱，其余隐私不上页）═════ -->
   <header>
-    <!-- 头像占位：替换为 <img class="photo" src="images/avatar.jpg" alt="李昊锦"> -->
-    <div class="photo initials" role="img" aria-label="李昊锦的首字母头像">LH</div>
+    <!-- 头像占位：替换为 <img class="photo" src="images/avatar.jpg" alt="Hawk"> -->
+    <div class="photo initials" role="img" aria-label="Hawk的首字母头像">HK</div>
     <div>
-      <h1>李昊锦 / Haojin Li</h1>
-      <div class="role">嵌入式软件工程师 / Embedded Software Engineer</div>
-      <div class="affil">苏州普源精电（RIGOL）· 示波器事业部 / RIGOL Technologies · Oscilloscope BU</div>
+      <h1>Hawk</h1>
+      <div class="role">Linux内核驱动工程师 / Linux Kernel Driver Engineer</div>
+      <div class="affil"></div>
       <div class="meta">
-        苏州 Suzhou
+        上海 Shanghai
         <span class="sep">·</span>
         <a href="mailto:1507992088@qq.com">1507992088@qq.com</a>
       </div>
@@ -584,21 +583,17 @@
   <!-- ═════ ③ About 简介 ═════ -->
   <section class="about">
     <p>
-      我是<strong>李昊锦</strong>，嵌入式软件工程师。2024 年毕业于江南大学通信工程专业，
-      现就职于苏州普源精电（RIGOL）示波器事业部，参与中端仪器平台开发与高端平台预研。
-      工作主线三件事：<strong>Linux 驱动</strong>（PCIe XDMA / USB / 以太网，链路速率做到 6 Gbps）、
-      <strong>仪器通信与命令解析框架</strong>（多协议数据链路 + IEEE 488.2）、
-      <strong>跨 ARM / x86 平台迁移与工程化</strong>（核心模块 98% 代码复用）。
+      我是<strong>Hawk</strong>，内核驱动工程师。2024 年毕业于江南大学通信工程专业，
+      工作主线三件事：<strong>Linux 驱动</strong>、
+      <strong>AI效能提升</strong>、
+      <strong>芯片架构设计</strong>。
     </p>
     <p>
-      工作之外持续迭代国家级大创项目<strong>「智慧环卫」</strong>：在 RK3588 上部署 YOLOv5s，
-      12 线程并行推理把 NPU 吞吐做到单线程的 6 倍，用于垃圾桶满溢识别与回收调度。
+      在工作中，我致力于提升系统的稳定性和性能，通过深入理解硬件和软件的交互，不断优化和改进。
     </p>
     <div lang="en">
       <p>
-        Embedded software engineer at RIGOL's oscilloscope division — Linux drivers,
-        instrument communication stacks, and ARM/x86 platform migration.
-        Side project: edge AI waste sorting on RK3588.
+        I am a Linux kernel driver engineer. My main work involves three areas: <strong>Linux drivers</strong>, <strong>AI efficiency improvement</strong>, and <strong>chip architecture design</strong>.
       </p>
     </div>
     <div lang="zh-CN">
@@ -735,17 +730,12 @@
     <h2>Patents &amp; Software Copyrights / 专利与软著</h2>
     <div class="pub">
       <div class="title">一种垃圾回收方法、智能垃圾箱及垃圾回收系统</div>
-      <div class="authors"><span class="me">李昊锦</span>（第一发明人）等</div>
+      <div class="authors"><span class="me">Hawk</span>（第一发明人）等</div>
       <div class="venue">中国发明专利 · 已进入实质审查 <span class="badge">实审中</span></div>
     </div>
     <div class="pub">
       <div class="title">校园垃圾车回收路径规划网站平台 V1.0</div>
-      <div class="authors"><span class="me">李昊锦</span></div>
-      <div class="venue">中国软件著作权 · 已受理 <span class="badge">软著</span></div>
-    </div>
-    <div class="pub">
-      <div class="title">〔待补充〕第二项软件著作权名称</div>
-      <div class="authors"><span class="me">李昊锦</span></div>
+      <div class="authors"><span class="me">Hawk</span></div>
       <div class="venue">中国软件著作权 · 已受理 <span class="badge">软著</span></div>
     </div>
   </section>
@@ -767,7 +757,7 @@
     </div>
     <div class="skill-group">
       <span class="label">嵌入式 AI</span>
-      <span class="val">YOLOv5s / AlexNet 边缘部署 · NPU 多线程并行推理 · RGA + OpenCL 异构加速</span>
+      <span class="val">边缘部署 · NPU 多线程并行推理 · RGA + OpenCL 异构加速</span>
     </div>
     <div class="skill-group">
       <span class="label">工程与硬件</span>
@@ -777,7 +767,7 @@
 
   <!-- ═════ ⑩ Footer 页脚 ═════ -->
   <footer>
-    李昊锦 / Haojin Li · 2026<br>
+    Hawk · 2026<br>
     <span class="credit">把想法可靠地做成系统。/ Turning ideas into reliable systems.</span>
   </footer>
 

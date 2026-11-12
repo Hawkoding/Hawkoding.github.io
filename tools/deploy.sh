@@ -42,6 +42,12 @@ set -u
 umask 022
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" && pwd)
+# 站点根目录：兼容脚本放在 tools/ 子目录的情况（以包含 index.html 与
+# .nojekyll 的目录为准；脚本放站点根目录时行为不变）
+SITE_ROOT="${SCRIPT_DIR}"
+if [ ! -f "${SCRIPT_DIR}/index.html" ] && [ -f "${SCRIPT_DIR}/../index.html" ]; then
+  SITE_ROOT=$(cd -- "${SCRIPT_DIR}/.." && pwd)
+fi
 REPO_NAME="${REPO_NAME:-Hawkoding.github.io}"
 POLL_INTERVAL="${POLL_INTERVAL:-10}"
 POLL_MAX="${POLL_MAX:-45}"
@@ -73,7 +79,7 @@ command -v curl  >/dev/null 2>&1 || die "未找到 curl, 请先安装 curl"
 # ----------------------------------------------------------------------------
 # 第 0 步: 整站结构检查（离线, 两种模式都执行）
 # ----------------------------------------------------------------------------
-step "整站结构检查" "目录: ${SCRIPT_DIR}"
+step "整站结构检查" "目录: ${SITE_ROOT}"
 
 REQUIRED_FILES=(
   "index.html"
@@ -84,17 +90,17 @@ REQUIRED_FILES=(
   "cv/cv_cn.pdf"
 )
 for f in "${REQUIRED_FILES[@]}"; do
-  [ -f "${SCRIPT_DIR}/${f}" ] || die "缺少站点文件: ${f}
+  [ -f "${SITE_ROOT}/${f}" ] || die "缺少站点文件: ${f}
     请在 deploy.sh 所在目录运行本脚本; 若你已确认删除某部分站点,
     可同步精简脚本顶部的 REQUIRED_FILES 列表。"
 done
 
 # 占位 PDF 一并占位检查: 主页确实链接了它们
-if grep -q '</html>' "${SCRIPT_DIR}/index.html"; then :; else
+if grep -q '</html>' "${SITE_ROOT}/index.html"; then :; else
   die "index.html 似乎不完整（未找到 </html>）"
 fi
 
-SITE_FILE_COUNT=$(find "${SCRIPT_DIR}" -type f -not -path '*/.git/*' | wc -l | tr -d ' ')
+SITE_FILE_COUNT=$(find "${SITE_ROOT}" -type f -not -path '*/.git/*' | wc -l | tr -d ' ')
 printf '    关键文件齐全, 目录内共 %s 个文件（不含 .git）\n' "${SITE_FILE_COUNT}"
 
 # ----------------------------------------------------------------------------
@@ -107,7 +113,7 @@ if [ "${DRY_RUN}" = "1" ]; then
   trap 'rm -rf "${TMP_DIR}"' EXIT INT TERM
 
   # 复制整站（排除 .git 与系统杂物）
-  ( cd "${SCRIPT_DIR}" && find . -mindepth 1 -maxdepth 1 \
+  ( cd "${SITE_ROOT}" && find . -mindepth 1 -maxdepth 1 \
       ! -name '.git' ! -name '.DS_Store' ! -name 'Thumbs.db' \
       -exec cp -R -p {} "${TMP_DIR}/" \; ) || die "整站复制失败"
 
@@ -149,7 +155,7 @@ step "读取 GH_TOKEN" "token 仅用于请求头, 不写入文件 / 远程地址
   Personal access tokens）, 然后执行:
       export GH_TOKEN=ghp_xxxxxxxxxxxx   # 仅当前终端会话有效"
 
-if grep -rl -- "${GH_TOKEN}" "${SCRIPT_DIR}" --exclude-dir=.git >/dev/null 2>&1; then
+if grep -rl -- "${GH_TOKEN}" "${SITE_ROOT}" --exclude-dir=.git >/dev/null 2>&1; then
   die "检测到 GH_TOKEN 出现在站点文件中, 已中止。请先移除再部署。"
 fi
 
@@ -216,32 +222,32 @@ fi
 # ----------------------------------------------------------------------------
 step "整站提交" "git init / add -A / commit（含 blog/、cv/ 全部文件）"
 
-git -C "${SCRIPT_DIR}" init -q 2>/dev/null || die "git init 失败"
-git -C "${SCRIPT_DIR}" symbolic-ref HEAD refs/heads/main
-if ! git -C "${SCRIPT_DIR}" config user.name >/dev/null 2>&1; then
-  git -C "${SCRIPT_DIR}" config user.name  "${GH_LOGIN}"
-  git -C "${SCRIPT_DIR}" config user.email "${GH_LOGIN}@users.noreply.github.com"
+git -C "${SITE_ROOT}" init -q 2>/dev/null || die "git init 失败"
+git -C "${SITE_ROOT}" symbolic-ref HEAD refs/heads/main
+if ! git -C "${SITE_ROOT}" config user.name >/dev/null 2>&1; then
+  git -C "${SITE_ROOT}" config user.name  "${GH_LOGIN}"
+  git -C "${SITE_ROOT}" config user.email "${GH_LOGIN}@users.noreply.github.com"
 fi
-mkdir -p "${SCRIPT_DIR}/.git/info"
-printf '.DS_Store\nThumbs.db\n*.swp\n' > "${SCRIPT_DIR}/.git/info/exclude"
+mkdir -p "${SITE_ROOT}/.git/info"
+printf '.DS_Store\nThumbs.db\n*.swp\n' > "${SITE_ROOT}/.git/info/exclude"
 
 # 远程地址不含 token: 推送认证走临时请求头（-c 仅对本次命令生效, 不落盘）
-if git -C "${SCRIPT_DIR}" remote get-url origin >/dev/null 2>&1; then
-  git -C "${SCRIPT_DIR}" remote set-url origin "${REPO_URL}"
+if git -C "${SITE_ROOT}" remote get-url origin >/dev/null 2>&1; then
+  git -C "${SITE_ROOT}" remote set-url origin "${REPO_URL}"
 else
-  git -C "${SCRIPT_DIR}" remote add origin "${REPO_URL}"
+  git -C "${SITE_ROOT}" remote add origin "${REPO_URL}"
 fi
 
-git -C "${SCRIPT_DIR}" add -A || die "git add 失败"
+git -C "${SITE_ROOT}" add -A || die "git add 失败"
 
-if git -C "${SCRIPT_DIR}" diff --cached --quiet HEAD 2>/dev/null; then
+if git -C "${SITE_ROOT}" diff --cached --quiet HEAD 2>/dev/null; then
   printf '    没有待提交的改动, 沿用现有提交\n'
 else
-  git -C "${SCRIPT_DIR}" commit -q -m "Deploy site to GitHub Pages ($(date '+%Y-%m-%d %H:%M:%S'))" \
+  git -C "${SITE_ROOT}" commit -q -m "Deploy site to GitHub Pages ($(date '+%Y-%m-%d %H:%M:%S'))" \
     || die "git commit 失败"
 fi
 
-COMMIT_FILES=$(git -C "${SCRIPT_DIR}" ls-files | wc -l | tr -d ' ')
+COMMIT_FILES=$(git -C "${SITE_ROOT}" ls-files | wc -l | tr -d ' ')
 printf '    本次纳入版本控制的文件数: %s\n' "${COMMIT_FILES}"
 
 PUSH_FLAGS="-u origin main"
@@ -250,7 +256,7 @@ if [ "${FORCE_PUSH:-0}" = "1" ]; then PUSH_FLAGS="--force origin main"; fi
 AUTH_HEADER=$(printf 'x-access-token:%s' "${GH_TOKEN}" | base64 | tr -d '\n')
 step "推送到远程" "git push ${PUSH_FLAGS}（认证经请求头注入, token 不落盘）"
 
-git -C "${SCRIPT_DIR}" \
+git -C "${SITE_ROOT}" \
   -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${AUTH_HEADER}" \
   push ${PUSH_FLAGS} 2>&1 | sed "s/${GH_TOKEN}/***/g" \
   || die "推送失败。常见原因: 远程 main 已有不同历史（可用 FORCE_PUSH=1 重试）、

@@ -39,6 +39,7 @@
 # ============================================================================
 
 set -u
+set -o pipefail  # 让 git push | sed 管道的失败也能被 || die 捕获
 umask 022
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" && pwd)

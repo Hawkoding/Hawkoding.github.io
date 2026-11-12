@@ -12,8 +12,8 @@
     即可换成真实图片（对应位置已留注释）。
   · 图标：Font Awesome 6.5.1 走 CDN，需浏览器联网。
   · 移动端：640px 断点自适应，无需额外操作。
-  · blog/ 与 cv/ 目录为占位内容，主页暂不设入口；待真实博文 / 简历 PDF
-    就绪后，恢复导航 Blog 链接与页眉 CV 链接即可（相关样式均已保留）。
+  · blog/ 已上线：导航栏 Blog 胶囊按钮 + 页眉深色精选卡片两个入口；
+    cv/ 暂无简历 PDF，页眉 CV 链接暂不设置（样式已保留）。
   ═══════════════════════════════════════════════════════════════════
 -->
 <html lang="zh-CN">
@@ -92,8 +92,7 @@
     color: var(--c6);
     background: var(--c1);
   }
-  /* Blog 导航链接已移除（blog/ 为占位内容，暂不设入口）；恢复时加回
-     <a class="blog-link" href="blog/">Blog ↗</a> 并补回深色胶囊按钮样式：
+  /* Blog 导航胶囊按钮 */
   .site-nav .links .blog-link {
     color: var(--c0);
     background: var(--c6);
@@ -103,7 +102,6 @@
     color: var(--c0);
     background: var(--accent);
   }
-  */
 
   /* ── Header ── */
   header {
@@ -170,8 +168,7 @@
   }
   header .meta .sep { color: var(--c3); user-select: none; }
 
-  /* ── Featured blog（卡片 HTML 已于 2026-11-11 移除：blog/ 目录为占位内容，
-     暂不设入口；样式整体保留，恢复时粘回卡片结构即可，或改造为主打项目卡）── */
+  /* ── Featured blog：页眉下的深色精选卡片（博客入口）── */
   .blog-feature {
     position: relative;
     display: block;
@@ -534,7 +531,8 @@
   @media (max-width: 640px) {
     .page { padding: 36px 18px 56px; }
     .site-nav { margin-bottom: 28px; }
-    /* 导航锚点在移动端保留显示（原模板移动端仅显示 Blog 按钮，Blog 已移除） */
+    /* 移动端导航只保留 Blog 胶囊按钮（与原版一致，锚点链接隐藏） */
+    .site-nav .links a:not(.blog-link) { display: none; }
     header { flex-direction: column; align-items: flex-start; gap: 16px; }
     header .photo { width: 72px; height: 72px; }
     header .photo.initials { font-size: 24px; }
@@ -558,6 +556,7 @@
       <a href="#research">Research</a>
       <a href="#awards">Awards</a>
       <a href="#publications">Publications</a>
+      <a class="blog-link" href="blog/">Blog <span aria-hidden="true">↗</span></a>
     </div>
   </nav>
 
@@ -568,17 +567,25 @@
     <div>
       <h1>Hawk</h1>
       <div class="role">Linux内核驱动工程师 / Linux Kernel Driver Engineer</div>
-      <div class="affil"></div>
+      <div class="affil">某芯片原厂</div>
       <div class="meta">
         上海 Shanghai
         <span class="sep">·</span>
         <a href="mailto:1507992088@qq.com">1507992088@qq.com</a>
+        <span class="sep">·</span>
+        <a href="blog/">Blog</a>
+        <span class="sep">·</span>
+        <a href="https://github.com/Hawkoding">GitHub</a>
       </div>
     </div>
   </header>
 
-  <!-- ═════ ② 精选博客卡片：已移除（blog/ 为占位内容，暂不设入口）。
-       恢复方法：粘回 .blog-feature 卡片结构（样式保留在 <style> 中）═════ -->
+  <!-- ═════ ② 精选博客卡片：深色大卡，博客的第二个入口 ═════ -->
+  <a class="blog-feature" href="blog/" aria-label="访问随想录博客">
+    <div class="eyebrow"><span class="dot" aria-hidden="true"></span> Now writing · Blog</div>
+    <h2>随想录 / Hawk's Notes</h2>
+    <p>从内核驱动到投资与生活，记录读过的书、走过的弯路，以及那些尚未想明白的问题。</p>
+  </a>
 
   <!-- ═════ ③ About 简介 ═════ -->
   <section class="about">
@@ -591,11 +598,6 @@
     <p>
       在工作中，我致力于提升系统的稳定性和性能，通过深入理解硬件和软件的交互，不断优化和改进。
     </p>
-    <div lang="en">
-      <p>
-        I am a Linux kernel driver engineer. My main work involves three areas: <strong>Linux drivers</strong>, <strong>AI efficiency improvement</strong>, and <strong>chip architecture design</strong>.
-      </p>
-    </div>
     <div lang="zh-CN">
       <p>
         球场上是首发中锋，场下用 SolidWorks / PS / PR 做点小东西。

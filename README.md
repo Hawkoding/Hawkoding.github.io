@@ -1,9 +1,10 @@
 # Hawkoding.github.io · 学术主页整站（GitHub Pages 根域名部署）
 
 一个不依赖任何构建工具的纯静态个人主页整站：单页主页 + 博客 + 简历占位文件 +
-一键部署脚本。主页内容已填入Hawk的真实信息（2026-11 按定稿文案填充）；
-`blog/` 内文章与 `cv/` 内 PDF 仍为**占位内容**，主页暂不设入口，
-待真实博文 / 简历 PDF 就绪后再替换并恢复链接。
+一键部署脚本。主页内容为 Hawk 的真实信息；博客「随想录 / Hawk's Notes」已上线，
+主页设**两个入口**（导航栏 Blog 胶囊按钮 + 页眉下深色精选卡片）。
+`cv/` 内 PDF 仍为**占位文件**，待简历就绪后替换并在页眉恢复 CV 链接
+（相关样式均已保留在 `index.html` 中）。
 
 默认仓库名为 `Hawkoding.github.io`（用户名仓库），站点直接发布在根域名
 `https://hawkoding.github.io/`——站内全部链接使用相对路径，放在根路径或
@@ -15,13 +16,15 @@
 | 文件 | 说明 |
 | ---- | ---- |
 | `index.html` | 主页：单文件、样式内联，内容为Hawk真实信息 |
-| `blog/index.html` | 博客列表页（含 hero、文章卡片、侧栏） |
+| `blog/index.html` | 博客列表页：hero / 侧栏文案手写；文章卡片与「栏目」由 md2blog.py 在标记内生成 |
 | `blog/blog.css` | 博客样式（与主页同源风格） |
-| `blog/posts/` | 3 篇占位文章 + `_template.html` 新文章模板 |
-| `blog/feed.xml` | RSS 订阅源（占位条目，链接已指向本站根域名） |
+| `blog/posts/` | 文章页：由 `tools/md2blog.py` 从 `database/` 生成（勿手改）+ 3 篇占位示例 |
+| `blog/feed.xml` | RSS 订阅源：`ITEMS` 区域由 md2blog.py 生成 |
+| `database/` | 博客 markdown 源稿：子文件夹 = 分类，文件名 `YYYYMMDD 标题.md` |
+| `tools/md2blog.py` | 自研转换工具：md → 文章页，并重写列表页与 RSS（幂等、可 `--dry-run`） |
+| `tools/deploy.sh` | 一键部署脚本（macOS / Linux / Windows Git Bash） |
 | `cv/cv.pdf`、`cv/cv_cn.pdf` | 简历占位 PDF，与主页 `cv/…` 链接对应；**请替换为你自己的简历** |
 | `.nojekyll` | 让 GitHub Pages 跳过 Jekyll 处理，文件原样发布 |
-| `deploy.sh` | 一键部署脚本（macOS / Linux / Windows Git Bash） |
 | `README.md` | 本说明 |
 
 ## 方式一：一键部署（推荐）
@@ -39,9 +42,9 @@
 
 ```bash
 export GH_TOKEN=ghp_xxxxxxxxxxxx     # 必填：你的 PAT（仅当前终端会话有效）
-# REPO_NAME=其他名字 bash deploy.sh  # 可选：默认仓库名为 Hawkoding.github.io
+# REPO_NAME=其他名字 bash tools/deploy.sh  # 可选：默认仓库名为 Hawkoding.github.io
 
-bash deploy.sh
+bash tools/deploy.sh
 ```
 
 脚本会自动完成：创建公开仓库 `Hawkoding.github.io` → 整站提交推送（含
@@ -52,7 +55,7 @@ bash deploy.sh
 可以先离线演练（不联网、不推送、不留临时文件）：
 
 ```bash
-bash deploy.sh --dry-run    # 在临时目录完整走一遍 git init/add/commit 并列出全部提交文件
+bash tools/deploy.sh --dry-run    # 在临时目录完整走一遍 git init/add/commit 并列出全部提交文件
 ```
 
 ## 方式二：手动部署（不使用脚本）
@@ -83,16 +86,16 @@ git push -u origin main
 - **主页**：打开 `index.html`，全文搜索「你的」逐项替换（姓名、学校、导师、
   研究方向、项目、论文……）；主题色改 `:root { --accent: #2c3e6b; }`；
   首字母头像 / 色块校徽按文件内注释替换为 `<img>` 真实图片。
-- **博客**：改 `blog/index.html` 的品牌名、hero 文案与文章卡片；
-  每篇文章是 `blog/posts/` 下的一个独立 HTML。
-- **发布新文章**（参照原站工作流）：
-  1. 复制 `blog/posts/_template.html`，用英文短标题命名，如 `my-first-post.html`；
-  2. 填写标题、摘要、日期、分类、正文；
-  3. 在 `blog/index.html` 的文章列表顶部加入对应卡片；
-  4. 在 `blog/feed.xml` 顶部加入对应 `<item>` 并更新 `lastBuildDate`
-     （`feed.xml` 中的链接是绝对地址，已按本站根域名 `https://hawkoding.github.io/` 写好，
-     新条目照此格式即可）；
-  5. 本地确认文章页、列表入口与 RSS 链接都能打开后提交。
+- **博客**：`blog/index.html` 的品牌名、hero 文案、侧栏「关于这里 / 关注主题」
+  手写编辑（位于 `<!-- POSTS:BEGIN/END -->`、`<!-- TOPICS:BEGIN/END -->`
+  标记之外，重跑工具不会覆盖）；文章卡片与侧栏「栏目」由 md2blog.py 生成。
+- **发布新文章**：
+  1. 把 md 放进 `database/<分类>/`，文件名 `YYYYMMDD 标题.md`
+     （标题取自文件名，无需 frontmatter；行尾双空格 = 硬换行）；
+  2. `python tools/md2blog.py`（可选 `--dry-run` 预览、`--single 片段` 只转一篇）；
+  3. `bash tools/deploy.sh` 推送上线。
+  · 分类 = database 子文件夹名；`![[图片]]` 会被跳过；文章页文件名
+    「日期-拼音slug.html」由工具生成，重复运行结果一致。
 - **简历**：用自己的 PDF 覆盖 `cv/cv.pdf`（英文）与 `cv/cv_cn.pdf`（中文）；
   如需增删，同步修改 `index.html` 顶部的 `cv/…` 链接。
 - **社交分享卡片**：各页 `<head>` 中被注释掉的 `og:image` / `twitter:*` 标签，
@@ -111,7 +114,7 @@ git push -u origin main
   开头的文件/目录（如 `blog/posts/_template.html`）；放置 `.nojekyll` 可让
   所有文件原样发布。
 - **推送被拒绝**：远程 `main` 已有不同历史。确认可用本目录覆盖后，执行
-  `FORCE_PUSH=1 bash deploy.sh`（手动方式则 `git push --force -u origin main`）。
+  `FORCE_PUSH=1 bash tools/deploy.sh`（手动方式则 `git push --force -u origin main`）。
 - **用户名仓库（当前默认）**：仓库名 `<你的用户名>.github.io` 时站点发布在
   `https://<你的用户名>.github.io/` 根路径（无子路径），脚本自动识别；
   本仓库 `Hawkoding.github.io` 即属此类。
